@@ -1,0 +1,201 @@
+
+hr {
+    margin: 20px 0px;
+}
+Form{
+	width: 100%;
+}
+.navbarCustom{
+	padding-top:1rem !important;
+	padding-bottom:1rem !important;
+	background-color:rgba(0,0,0,1);
+	position:fixed;
+	top:0px;
+	right:0;
+	left:0;
+	z-index:1030;
+}
+.navbarTitle, .navbarLink {
+	text-transform:uppercase;
+	letter-spacing:.1rem;
+	color:#fff;
+	padding:1rem;
+	text-decoration: none;
+}
+
+.navbarTitle:hover, .navbarLink:hover {
+	text-decoration: none;
+}
+
+.navbarTitle {
+	font-size:1rem;
+	font-weight:700;
+}
+
+.navbarLink{
+	font-size:.8rem;
+}
+
+.navbarDivLeft{
+	display:inline;
+	float: left;
+	margin-left: 10%;
+}
+
+.navbarDivRight{
+	display:inline;
+	float: right;
+	margin-right: 10%;
+}
+
+.pageContent{
+	margin-top: 6rem;
+	margin-bottom: 1rem;
+	width: 100%;
+}
+
+.pageTitle{
+	padding: 0px 0px 0px 13px;
+	font-family: Catamaran;
+	font-weight: 800!important;
+	font-size: 2.5rem;
+	margin-top: 0;
+	margin-bottom: .5rem;
+	line-height: 1.2;
+}
+
+.pageTitle:after{
+	content: "";
+	display: block;
+	height: 4px;
+	background: linear-gradient(to right, rgb(255, 186, 115), #ffb2b2);
+	box-sizing: border-box;
+}
+
+.footer{
+	background-color:rgba(0,0,0,1);
+	color:#fff;
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+}
+
+.footerString{
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+	font-size: 80%;
+	font-weight: 400;
+}
+
+.buttonBackDiv{
+	text-align: center;
+}
+
+.buttonBack{
+	width: 120px;
+	height: 40px;
+	margin: 15px;
+}
+
+.buttonSmall{
+	width: 60px;
+	height: 30px;
+	font-size: 12px;
+	margin: 15px;
+}
+
+.buttonMiddle{
+	width: 130px;
+	height: 40px;
+	margin: 15px;
+}
+
+.buttonLarge{
+	width: 210px;
+	height: 40px;
+	margin: 15px;
+}
+
+.float_right{
+	float: right;
+}
+
+.form_frame{
+    padding: 1em 1em 0.5em 1em;
+    margin: 0 1rem 0 1rem;
+    background: white;
+    border-top: solid 5px rgb(255, 186, 115);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+}
+.form_div{
+	border-bottom: 1px solid rgba(0,0,0,.1);
+	padding: 1.5rem 1rem 1.5rem 1rem;
+	display: inline-block;
+}
+.evaluation{
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
+}
+.evaluation input[type='radio']{
+	display: none;
+}
+.evaluation label{
+	position: relative;
+	padding: 10px 0px 0px 10px;
+	color: gray;
+	cursor: pointer;
+	font-size: 20px;
+}
+.evaluation label .text{
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	padding-left: 10px;
+	text-align: center;
+	font-size: 12px;
+	color: gray;
+}
+.evaluation_active label:hover,
+.evaluation_active label:hover ~ label,
+.evaluation input[type='radio']:checked ~ label{
+	color: #ffcc00;
+}
+
+.evaluation_label{
+	margin: 0 0.5rem 0 0.5rem;
+}
+
+.date_text{
+	width: 55%;
+	display: inline;
+}
+
+.price_text{
+	width: 80%;
+	display: inline;
+}
+
+.form_textarea{
+	display: inline;
+}
+
+.form_buttom_div{
+	text-align: center;
+}
+
+.none{
+	display: none;
+}
+
+.message_frame {
+    padding: 1rem;
+    margin: 2rem 0;
+    border: double 5px #ffcc00;
+}
+.message_frame p {
+    margin: 0; 
+	padding: 0;
+	font-size: 18px;
+}
