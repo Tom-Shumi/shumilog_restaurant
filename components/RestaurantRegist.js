@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import firebase from 'firebase';
+import firebase, { storage } from 'firebase';
 import {Container, Row, Col, Button, Form} from 'react-bootstrap';
 import common from "../static/common.css";
 import restaurant_regist_css from "../static/restaurant_regist.css";
@@ -131,13 +131,21 @@ class RestaurantRegist extends Component{
     }
     
     doRegist(e){
+        let photoName = '';
+        
+        if (this.state.photo != '') {
+            let extension = this.state.photo.split("/").reverse()[0].split('.')[1];
+            photoName = Math.random().toString(36).substring(2) + '.' + extension;
+        };
+
         let data = {
             name: this.state.name,
             category: this.state.category,
             visitDate: this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay,
             price: this.state.price,
             score: this.state.score,
-            review: this.state.review
+            review: this.state.review,
+            photo: photoName
         }
         let db = firebase.database();
         let ref = db.ref('Review/' + this.props.username);
