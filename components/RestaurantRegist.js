@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import firebase, { storage } from 'firebase';
+import firebase from 'firebase';
 import {Container, Row, Col, Button, Form} from 'react-bootstrap';
 import common from "../static/common.css";
 import restaurant_regist_css from "../static/restaurant_regist.css";
@@ -84,7 +84,9 @@ class RestaurantRegist extends Component{
     }
 
     onChangePhoto(e){
-        this.setState({photo:e.target.value});
+        // this.setState({photo:e.target.value});
+        this.setState({photo:e.target.files[0]});
+        console.log(e.target.files[0]);
     }
 
     onChangePrice(e){
@@ -134,10 +136,12 @@ class RestaurantRegist extends Component{
         let photoName = '';
         
         if (this.state.photo != '') {
-            let extension = this.state.photo.split("/").reverse()[0].split('.')[1];
+            let extension = this.state.photo.name.split('.')[1];
             photoName = Math.random().toString(36).substring(2) + '.' + extension;
         };
 
+        let storageRef = firebase.storage().ref('/review_image/' + photoName);
+        storageRef.put(this.state.photo);
         let data = {
             name: this.state.name,
             category: this.state.category,
