@@ -47,6 +47,7 @@ class RestaurantRegist extends Component{
         this.onChangePrice = this.onChangePrice.bind(this);
         this.doRegist = this.doRegist.bind(this);
         this.doClear = this.doClear.bind(this);
+        this.validation = this.validation.bind(this);
     }
 
     componentDidMount() {
@@ -61,6 +62,7 @@ class RestaurantRegist extends Component{
 
     onChangeCategory(e){
         this.setState({category:e.target.value});
+        console.log(e.target.value);
     }
 
     onChangeScore(e){
@@ -84,9 +86,7 @@ class RestaurantRegist extends Component{
     }
 
     onChangePhoto(e){
-        // this.setState({photo:e.target.value});
         this.setState({photo:e.target.files[0]});
-        console.log(e.target.files[0]);
     }
 
     onChangePrice(e){
@@ -118,7 +118,7 @@ class RestaurantRegist extends Component{
     createCategoryList(){
         let contentCategoryList = [];
         contentCategoryList.push(
-            <option key={"category"} value='00'></option>
+            <option key={"category"} value=''></option>
         )
         for (let i in this.state.categoryList){
             contentCategoryList.push(
@@ -171,12 +171,46 @@ class RestaurantRegist extends Component{
 
     }
 
+    validation(){
+        let error = false;
+        let errorMsg = '';
+        if (errorMsg == '') {
+            error = true;
+            errorMsg = 'レストラン名を入力してください。';
+        }
+        if (!error && this.state.category == '') {
+            error = true;
+            errorMsg = 'カテゴリを選択してください。';
+        }
+        if (!error && this.state.onChangeVisitYear == '') {
+            error = true;
+            errorMsg = '来店日[年]を入力してください。';
+        }
+        if (!error && this.state.onChangeVisitMonth == '') {
+            error = true;
+            errorMsg = '来店日[月]を入力してください。';
+        }
+        if (!error && this.state.onChangeVisitDay == '') {
+            error = true;
+            errorMsg = '来店日[日]を入力してください。';
+        }
+        // TODO--------------------------------------続き
+
+        return errorMsg;
+    }
+
     render(){
+        let error = true;
+        let errorMsg = this.validation();
+        if (errorMsg == '') {
+            error = false;
+        }
         return (
             <div className={common.form_frame}>
                 <Container>
                     <Row>
                         <Form>
+                            {error && <p className={common.error_msg}>{errorMsg}</p>}
                             <Col sm={4} className={common.form_div}>
                                 <strong>レストラン名：</strong>
                             </Col>
@@ -184,7 +218,7 @@ class RestaurantRegist extends Component{
                                 <Form.Control type="text" size="30" value={this.state.name} onChange={this.onChangeName} />
                             </Col>
                             <Col sm={4} className={common.form_div}>
-                                <strong>ジャンル：</strong>
+                                <strong>カテゴリ：</strong>
                             </Col>
                             <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding2}>
                                 {this.createCategoryList()}
@@ -232,7 +266,7 @@ class RestaurantRegist extends Component{
                                 <Form.File id="photo" onChange={this.onChangePhoto} />
                             </Col>
                             <Col sm={12} className={common.form_buttom_div}>
-                                <Button key="regist" variant="warning" className={common.buttonMiddle}  onClick={this.doRegist}>登録</Button>
+                                <Button key="regist" variant="warning" className={common.buttonMiddle}  onClick={this.doRegist}  disabled={error} >登録</Button>
                                 <Button key="clear" variant="outline-secondary" className={common.buttonMiddle}  onClick={this.doClear}>クリア</Button>
                             </Col>
                         </Form>

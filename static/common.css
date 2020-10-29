@@ -199,3 +199,10 @@ Form{
 	padding: 0;
 	font-size: 18px;
 }
+
+.error_msg{
+	color: red;
+	font-weight: bold;
+	font-size: 20px;
+	margin-left: 30px;
+}
