@@ -9,13 +9,15 @@ class RestaurantList extends Component{
     constructor(props){
         super(props);
         this.state = {
-            username: ''
+            username: '',
+            loading: true,
+            review: null
         }
     }
 
     componentDidMount() {
         this.getAuth(this.props.requestId);
-      }
+    }
 
     getAuth(i){
         if (i != undefined) {
@@ -27,9 +29,7 @@ class RestaurantList extends Component{
 
                 if(d != undefined){
                     let username = d[i]['id'];
-                    this.setState({
-                        username: username
-                    });
+                    this.setState({username: username});
                     this.props.dispatch({
                         type: 'UPDATE_INFO',
                         value: {
@@ -43,9 +43,31 @@ class RestaurantList extends Component{
                     // ログインユーザ取得後、リクエスト情報削除
                     let ref_delete = db.ref('Users/' + i);
                     ref_delete.remove();
+
+                    this.getData();
                 }
             })
         }
+    }
+
+    getData(){
+        let name = this.props.username;
+        if (name == ''){
+            return;
+        } else {
+            this.setState({loading:false});
+        }
+        let db = firebase.database();
+        let ref = db.ref('Reviews/');    
+        // キーを元にログインユーザを取得
+        ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
+            console.log(snapshot.val());
+            let d = snapshot.val()[name];
+            this.setState({
+                review: d
+            });
+            console.log(this.state.review);
+        });
     }
 
     createButton(){
@@ -75,7 +97,7 @@ class RestaurantList extends Component{
 
     render(){
         let content = [];
-        if (this.props.username == ''){
+        if (this.props.username == '' || this.state.loading){
             content.push(<div key="load">ロード中です・・・</div>);
         } else {
             content.push(this.createButton());

@@ -13,7 +13,6 @@ class RestaurantRegist extends Component{
         super(props);
         // 現在日時取得
         let now = new Date();
-
         let db = firebase.database();
         let ref_CategoryList = db.ref('CategoryMst/');
         let categoryList = [];
@@ -62,7 +61,6 @@ class RestaurantRegist extends Component{
 
     onChangeCategory(e){
         this.setState({category:e.target.value});
-        console.log(e.target.value);
     }
 
     onChangeScore(e){
@@ -138,10 +136,9 @@ class RestaurantRegist extends Component{
         if (this.state.photo != '') {
             let extension = this.state.photo.name.split('.')[1];
             photoName = Math.random().toString(36).substring(2) + '.' + extension;
+            let storageRef = firebase.storage().ref('/review_image/' + photoName);
+            storageRef.put(this.state.photo);
         };
-
-        let storageRef = firebase.storage().ref('/review_image/' + photoName);
-        storageRef.put(this.state.photo);
         let data = {
             name: this.state.name,
             category: this.state.category,
@@ -152,7 +149,7 @@ class RestaurantRegist extends Component{
             photo: photoName
         }
         let db = firebase.database();
-        let ref = db.ref('Review/' + this.props.username);
+        let ref = db.ref('Reviews/' + this.props.username);
         ref.push(data);
         this.props.dispatch({
             type: 'UPDATE_INFO',
@@ -168,13 +165,24 @@ class RestaurantRegist extends Component{
     }
 
     doClear(e){
-
+        let now = new Date();
+        this.setState({
+            name: '',
+            score: 1,
+            price: '',
+            visitYear: now.getFullYear(),
+            visitMonth: now.getMonth() + 1,
+            visitDay: now.getDate(),
+            category: '',
+            review: '',
+            photo: ''
+        });
     }
 
     validation(){
         let error = false;
         let errorMsg = '';
-        if (errorMsg == '') {
+        if (this.state.name == '') {
             error = true;
             errorMsg = 'レストラン名を入力してください。';
         }
@@ -182,20 +190,22 @@ class RestaurantRegist extends Component{
             error = true;
             errorMsg = 'カテゴリを選択してください。';
         }
-        if (!error && this.state.onChangeVisitYear == '') {
+        if (!error && this.state.visitYear == '') {
             error = true;
             errorMsg = '来店日[年]を入力してください。';
         }
-        if (!error && this.state.onChangeVisitMonth == '') {
+        if (!error && this.state.visitMonth == '') {
             error = true;
             errorMsg = '来店日[月]を入力してください。';
         }
-        if (!error && this.state.onChangeVisitDay == '') {
+        if (!error && this.state.visitDay == '') {
             error = true;
             errorMsg = '来店日[日]を入力してください。';
         }
-        // TODO--------------------------------------続き
-
+        if (!error && this.state.price == '') {
+            error = true;
+            errorMsg = '金額を入力してください。';
+        }
         return errorMsg;
     }
 
@@ -257,13 +267,13 @@ class RestaurantRegist extends Component{
                                 <strong>レビュー：</strong>
                             </Col>
                             <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding6}>
-                                <Form.Control as="textarea" rows={4} cols={40} className={common.form_textarea} onChange={this.onChangeReview} />
+                                <Form.Control as="textarea" value={this.state.review} rows={4} cols={40} className={common.form_textarea} onChange={this.onChangeReview} />
                             </Col>
                             <Col sm={4} className={common.form_div}>
                                 <strong>画像：</strong>
                             </Col>
                             <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding7}>
-                                <Form.File id="photo" onChange={this.onChangePhoto} />
+                                <Form.File id="photo" filename={this.state.photo} onChange={this.onChangePhoto} />
                             </Col>
                             <Col sm={12} className={common.form_buttom_div}>
                                 <Button key="regist" variant="warning" className={common.buttonMiddle}  onClick={this.doRegist}  disabled={error} >登録</Button>
