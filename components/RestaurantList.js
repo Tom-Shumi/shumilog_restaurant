@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import {Button} from 'react-bootstrap';
+import {Button, Row, Col, Modal} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 
@@ -11,15 +11,32 @@ class RestaurantList extends Component{
         this.state = {
             username: '',
             loading: true,
-            review: null
+            review: null,
+            show: false,
+            no: null,
         }
+        this.handleShow = this.handleShow.bind(this);
+        this.handleClose  = this.handleClose.bind(this);
+    }
+    
+    handleShow(e) {
+        this.setState({ 
+            no: e.target.getAttribute('data-no'),
+            show: true
+        })
+
+    }
+    handleClose() {
+        this.setState({ show: false })
     }
 
     componentDidMount() {
         this.getAuth(this.props.requestId);
+        this.getData();
     }
 
     getAuth(i){
+        console.log('getAuth');
         if (i != undefined) {
             let db = firebase.database();
             let ref = db.ref('Users/');    
@@ -43,7 +60,6 @@ class RestaurantList extends Component{
                     // ログインユーザ取得後、リクエスト情報削除
                     let ref_delete = db.ref('Users/' + i);
                     ref_delete.remove();
-
                     this.getData();
                 }
             })
@@ -51,6 +67,7 @@ class RestaurantList extends Component{
     }
 
     getData(){
+        console.log('getData');
         let name = this.props.username;
         if (name == ''){
             return;
@@ -61,12 +78,14 @@ class RestaurantList extends Component{
         let ref = db.ref('Reviews/');    
         // キーを元にログインユーザを取得
         ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
-            console.log(snapshot.val());
+            let review = [];
             let d = snapshot.val()[name];
+            for(let i in d){
+                review.push(d[i]);
+            }
             this.setState({
-                review: d
+                review: review
             });
-            console.log(this.state.review);
         });
     }
 
@@ -84,10 +103,52 @@ class RestaurantList extends Component{
 
     createTable(){
         let content = [];
-        if (this.props.data == undefined || this.props.data.length == 0) {
+        let review = this.state.review;
+        if (review == null || review.length == 0) {
             content.push(<div key="noData">データがありません。</div>);
+        } else {
+            content.push(
+                <Row key={'tableHeader'}>
+                    <Col sm={2} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
+                    <Col sm={3} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
+                    <Col sm={2} key='category' className={common.tableHeader}><strong>カテゴリ</strong></Col>
+                    <Col sm={1} key='score' className={common.tableHeader}><strong>点数</strong></Col>
+                    <Col sm={2} key='price' className={common.tableHeader}><strong>金額</strong></Col>
+                    <Col sm={1} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
+                    <Col sm={1} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
+                </Row>
+            );
+            for (let i in review) {
+                content.push(
+                    <Row key={'tableBody' + i}>
+                        <Col sm={2} key={'visitDate' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['visitDate']}</Col>
+                        <Col sm={3} key={'name' + i} className={common.tableBody}>
+                            <a key={'a_name' + i} onClick={this.handleShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
+                        </Col>
+                        <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
+                        <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
+                        <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
+                        <Col sm={1} key={'edit' + i} className={common.tableBody}></Col>
+                        <Col sm={1} key={'delete' + i} className={common.tableBody}></Col>
+                    </Row>
+                );
+            }
+            content.push(
+                <Modal show={this.state.show} onHide={this.handleClose} key='modal'>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modal heading</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Woohoo, you're reading this text in a modal!
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+              </Modal>
+            )
         }
-
         return (
             <div key="contentTable">
                 {content}
@@ -103,7 +164,6 @@ class RestaurantList extends Component{
             content.push(this.createButton());
             content.push(this.createTable());
         }
-        console.log(content);
         return (
             <div>
                 {content}
