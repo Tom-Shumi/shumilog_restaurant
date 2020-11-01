@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import {Button, Row, Col, Modal} from 'react-bootstrap';
+import {Button, Row, Col, Modal, Image} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 
@@ -13,7 +13,7 @@ class RestaurantList extends Component{
             loading: true,
             review: null,
             show: false,
-            no: null,
+            no: 0,
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose  = this.handleClose.bind(this);
@@ -22,12 +22,16 @@ class RestaurantList extends Component{
     handleShow(e) {
         this.setState({ 
             no: e.target.getAttribute('data-no'),
-            show: true
+            show: true,
+            photoURL: ''
         })
 
     }
     handleClose() {
-        this.setState({ show: false })
+        this.setState({
+            show: false,
+            photoURL: ''
+         });
     }
 
     componentDidMount() {
@@ -54,7 +58,8 @@ class RestaurantList extends Component{
                             username: username,
                             data: [],
                             actionURL: '',
-                            message: ''
+                            message: '',
+                            photoURL: ''
                         }
                     });
                     // ログインユーザ取得後、リクエスト情報削除
@@ -133,13 +138,28 @@ class RestaurantList extends Component{
                     </Row>
                 );
             }
+
+            if (review[this.state.no]['photo'] != '') {
+                let storageRef = firebase.storage().ref('/review_image/' + review[this.state.no]['photo']);
+                storageRef.getDownloadURL().then((url) => {
+                    this.setState({ photoURL: url + '/170x170' });
+                });    
+            }
+
             content.push(
                 <Modal show={this.state.show} onHide={this.handleClose} key='modal'>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>{review[this.state.no]['name']}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Woohoo, you're reading this text in a modal!
+                        <Row key={'modalBody'} className={common.modalBody}>
+                            <Col sm={3} key={'modalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>
+                            <Col sm={9} key={'modalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
+                            <Col sm={3} key={'modalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>
+                            <Col sm={9} key={'modalBodyPhoto'} className={common.tableBody}>
+                                {review[this.state.no]['photo'] == '' ? '' : <Image src={this.state.photoURL}/>}
+                            </Col>
+                        </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>

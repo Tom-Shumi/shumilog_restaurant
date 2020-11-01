@@ -128,8 +128,6 @@ Form{
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
 }
 .form_div{
-	border-bottom: 1px solid rgba(0,0,0,.1);
-	padding: 1.5rem 1rem 1.5rem 1rem;
 	display: inline-block;
 }
 .evaluation{
@@ -211,6 +209,7 @@ Form{
 	font-size: 20px;
 	padding: 5px;
 	border: 1px solid rgba(0,0,0,.1);
+	border-collapse: collapse;
 	background-color: lemonchiffon;
 	text-align: center;
 }
@@ -219,6 +218,7 @@ Form{
 	font-size: 18px;
 	padding: 5px;
 	border: 1px solid rgba(0,0,0,.1);
+	border-collapse: collapse;
 }
 
 .text_align_right{
@@ -230,9 +230,6 @@ Form{
 	color: #007bff !important;
 }
 
-.modalStyles {
-	border: 1px solid black;
-	background-color: white;
-	margin: 200px 100px;
-	width: 100%;
-};
+.modalBody{
+	padding: 10px;
+}

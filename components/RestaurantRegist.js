@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import {Container, Row, Col, Button, Form} from 'react-bootstrap';
 import common from "../static/common.css";
-import restaurant_regist_css from "../static/restaurant_regist.css";
 import Link from 'next/link';
 import Router from 'next/router';
 
@@ -224,57 +223,64 @@ class RestaurantRegist extends Component{
                             <Col sm={4} className={common.form_div}>
                                 <strong>レストラン名：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding1}>
+                            <Col sm={8} className={common.form_div}>
                                 <Form.Control type="text" size="30" value={this.state.name} onChange={this.onChangeName} />
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>カテゴリ：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding2}>
+                            <Col sm={8} className={common.form_div}>
                                 {this.createCategoryList()}
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>来店日：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding3}>
+                            <Col sm={8} className={common.form_div}>
                                 <Row>
                                     <Col sm={3}>
-                                        <Form.Control type="number" value={this.state.visitYear} onChange={this.onChangeVisitYear} className={common.date_text} />年
+                                        <Form.Control type="number" value={this.state.visitYear} onChange={this.onChangeVisitYear} className={common.date_text} min="1900" />年
                                     </Col>
                                     <Col sm={3}>
-                                        <Form.Control type="number" value={this.state.visitMonth} onChange={this.onChangeVisitMonth} className={common.date_text} />月
+                                        <Form.Control type="number" value={this.state.visitMonth} onChange={this.onChangeVisitMonth} className={common.date_text} min="1" max="12" />月
                                     </Col>
                                     <Col sm={3}>
-                                        <Form.Control type="number" value={this.state.visitDay} onChange={this.onChangeVisitDay} className={common.date_text} />日
+                                        <Form.Control type="number" value={this.state.visitDay} onChange={this.onChangeVisitDay} className={common.date_text} min="1" max="31" />日
                                     </Col>
                                 </Row>
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>金額：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding4}>
+                            <Col sm={8} className={common.form_div}>
                                 <Col sm={4}>
                                         <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.price_text} />円
                                 </Col>
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>点数：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding5}>
+                            <Col sm={8} className={common.form_div}>
                                 {this.createEvaluation()}
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>レビュー：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding6}>
+                            <Col sm={8} className={common.form_div}>
                                 <Form.Control as="textarea" value={this.state.review} rows={4} cols={40} className={common.form_textarea} onChange={this.onChangeReview} />
                             </Col>
+                            <hr />
                             <Col sm={4} className={common.form_div}>
                                 <strong>画像：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div + ' ' + restaurant_regist_css.form_div_padding7}>
+                            <Col sm={8} className={common.form_div}>
                                 <Form.File id="photo" filename={this.state.photo} onChange={this.onChangePhoto} />
                             </Col>
+                            <hr />
                             <Col sm={12} className={common.form_buttom_div}>
                                 <Button key="regist" variant="warning" className={common.buttonMiddle}  onClick={this.doRegist}  disabled={error} >登録</Button>
                                 <Button key="clear" variant="outline-secondary" className={common.buttonMiddle}  onClick={this.doClear}>クリア</Button>
