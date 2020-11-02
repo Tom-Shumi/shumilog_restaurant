@@ -146,24 +146,31 @@ class RestaurantRegist extends Component{
             let storageRef = firebase.storage().ref('/review_image/' + photoName);
             storageRef.put(this.state.photo);
         };
+
+        let date = this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay;
         let data = {
             name: this.state.name,
             category: this.state.category,
-            visitDate: this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay,
+            visitDate: date,
             price: this.state.price,
             score: this.state.score,
             review: this.state.review,
             photo: photoName,
-            key: this.state.name + '_' + this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay
+            key: this.state.name + '_' + date
         }
         let db = firebase.database();
         if (this.state.updateFlg == 0){
             let ref = db.ref('Reviews/' + username);
             ref.push(data);    
         } else {
-            let ref = db.ref('Reviews/' + username).orderByChild("key").equalTo(Router.query.n + '_' + Router.query.d);
-            console.log(ref);
-            ref.set(data);
+            db.ref('Reviews/' + username).orderByChild("key").equalTo(Router.query.n + '_' + Router.query.d).on('value', (snapshot)=>{
+                let target = snapshot.val() || null;
+                if (target) {
+                    let key = Object.keys(target)[0];
+                    let update = db.ref('Reviews/' + username + '/' + key);
+                    update.set(data);  
+                }
+            });
         }
         this.props.dispatch({
             type: 'UPDATE_INFO',
@@ -210,18 +217,19 @@ class RestaurantRegist extends Component{
                 if (item.visitDate == Router.query.d) return true;
             });
 
-            let date = new Date(Date.parse(review[0].visitDate));
-
-            this.setState({
-                name: review[0].name,
-                score: review[0].score,
-                price: review[0].price,
-                visitYear: date.getFullYear(),
-                visitMonth: date.getMonth() + 1,
-                visitDay: date.getDate(),
-                category: review[0].category,
-                review: review[0].review
-            });
+            if (review && review.length != 0) {
+                let date = new Date(Date.parse(review[0].visitDate));
+                this.setState({
+                    name: review[0].name,
+                    score: review[0].score,
+                    price: review[0].price,
+                    visitYear: date.getFullYear(),
+                    visitMonth: date.getMonth() + 1,
+                    visitDay: date.getDate(),
+                    category: review[0].category,
+                    review: review[0].review
+                });    
+            }
         });
     }
 
