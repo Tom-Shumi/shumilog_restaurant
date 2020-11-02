@@ -40,7 +40,6 @@ class RestaurantList extends Component{
     }
 
     getAuth(i){
-        console.log('getAuth');
         if (i != undefined) {
             let db = firebase.database();
             let ref = db.ref('Users/');    
@@ -72,7 +71,6 @@ class RestaurantList extends Component{
     }
 
     getData(){
-        console.log('getData');
         let name = this.props.username;
         if (name == ''){
             return;
@@ -81,12 +79,17 @@ class RestaurantList extends Component{
         }
         let db = firebase.database();
         let ref = db.ref('Reviews/');    
-        // キーを元にログインユーザを取得
+        // キーを元にレビューを取得
         ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
             let review = [];
-            let d = snapshot.val()[name];
-            for(let i in d){
-                review.push(d[i]);
+            if (snapshot.val() != null) {
+                let d = snapshot.val()[name];
+                for(let i in d){
+                    review.push(d[i]);
+                }
+                review.sort(function(val1,val2){
+                    return ( val1.visitDate < val2.visitDate ? 1 : -1);
+                });    
             }
             this.setState({
                 review: review
@@ -133,7 +136,11 @@ class RestaurantList extends Component{
                         <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
                         <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
                         <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
-                        <Col sm={1} key={'edit' + i} className={common.tableBody}></Col>
+                        <Col sm={1} key={'edit' + i} className={common.tableBody}>
+                            <Link href={"/restaurant_regist?n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
+                                <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
+                            </Link>
+                        </Col>
                         <Col sm={1} key={'delete' + i} className={common.tableBody}></Col>
                     </Row>
                 );
@@ -162,8 +169,8 @@ class RestaurantList extends Component{
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
-                            Close
+                        <Button variant="dark" onClick={this.handleClose}>
+                            閉じる
                         </Button>
                     </Modal.Footer>
               </Modal>

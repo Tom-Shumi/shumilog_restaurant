@@ -32,8 +32,10 @@ class RestaurantRegist extends Component{
             visitDay: now.getDate(),
             category: '',
             review: '',
-            photo: ''
+            photo: '',
+            updateFlg: 0
         }
+
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeCategory = this.onChangeCategory.bind(this);
         this.onChangeScore = this.onChangeScore.bind(this);
@@ -46,11 +48,16 @@ class RestaurantRegist extends Component{
         this.doRegist = this.doRegist.bind(this);
         this.doClear = this.doClear.bind(this);
         this.validation = this.validation.bind(this);
+        this.getTargetData = this.getTargetData.bind(this);
     }
 
     componentDidMount() {
         if (this.props.login == false) {
             Router.push('/restaurant_error');
+        }
+        if (Router.query.n != undefined && Router.query.d != undefined) {
+            this.getTargetData();
+            this.setState({updateFlg: 1});
         }
     }
 
@@ -123,13 +130,14 @@ class RestaurantRegist extends Component{
             )
         }
         return (
-            <Form.Control as="select" onChange={this.onChangeCategory} >
+            <Form.Control as="select" onChange={this.onChangeCategory} value={this.state.category} >
                 {contentCategoryList}
             </Form.Control>
         );
     }
     
     doRegist(e){
+        let username = this.props.username;
         let photoName = '';
         
         if (this.state.photo != '') {
@@ -145,11 +153,18 @@ class RestaurantRegist extends Component{
             price: this.state.price,
             score: this.state.score,
             review: this.state.review,
-            photo: photoName
+            photo: photoName,
+            key: this.state.name + '_' + this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay
         }
         let db = firebase.database();
-        let ref = db.ref('Reviews/' + this.props.username);
-        ref.push(data);
+        if (this.state.updateFlg == 0){
+            let ref = db.ref('Reviews/' + username);
+            ref.push(data);    
+        } else {
+            let ref = db.ref('Reviews/' + username).orderByChild("key").equalTo(Router.query.n + '_' + Router.query.d);
+            console.log(ref);
+            ref.set(data);
+        }
         this.props.dispatch({
             type: 'UPDATE_INFO',
             value: {
@@ -175,6 +190,38 @@ class RestaurantRegist extends Component{
             category: '',
             review: '',
             photo: ''
+        });
+    }
+
+    getTargetData(){
+        let name = this.props.username;
+        let db = firebase.database();
+        let ref = db.ref('Reviews/');    
+        ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
+            let d = snapshot.val()[name];
+            let reviewArr = [];
+            for(let i in d){
+                reviewArr.push(d[i]);
+            }
+            
+            let review = reviewArr.filter(function(item, index){
+                if (item.name == Router.query.n) return true;
+            }).filter(function(item, index){
+                if (item.visitDate == Router.query.d) return true;
+            });
+
+            let date = new Date(Date.parse(review[0].visitDate));
+
+            this.setState({
+                name: review[0].name,
+                score: review[0].score,
+                price: review[0].price,
+                visitYear: date.getFullYear(),
+                visitMonth: date.getMonth() + 1,
+                visitDay: date.getDate(),
+                category: review[0].category,
+                review: review[0].review
+            });
         });
     }
 
@@ -209,6 +256,7 @@ class RestaurantRegist extends Component{
     }
 
     render(){
+
         let error = true;
         let errorMsg = this.validation();
         if (errorMsg == '') {
