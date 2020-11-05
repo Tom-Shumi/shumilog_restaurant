@@ -120,6 +120,10 @@ Form{
 	float: right;
 }
 
+.vertical_bottom{
+	vertical-align: bottom;
+}
+
 .form_frame{
     padding: 1em 1em 0.5em 1em;
     margin: 0 1rem 0 1rem;

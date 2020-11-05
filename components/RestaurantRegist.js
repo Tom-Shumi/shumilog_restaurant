@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import {Container, Row, Col, Button, Form} from 'react-bootstrap';
+import {Container, Row, Col, Button, Form, Image} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 import Router from 'next/router';
@@ -33,6 +33,8 @@ class RestaurantRegist extends Component{
             category: '',
             review: '',
             photo: '',
+            stragePhoto: '',
+            photoURL: '',
             updateFlg: 0
         }
 
@@ -45,8 +47,12 @@ class RestaurantRegist extends Component{
         this.onChangeReview = this.onChangeReview.bind(this);
         this.onChangePhoto = this.onChangePhoto.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
+        this.createEvaluation = this.createEvaluation.bind(this);
+        this.createCategoryList = this.createCategoryList.bind(this);
+        this.createPhoto = this.createPhoto.bind(this);
         this.doRegist = this.doRegist.bind(this);
         this.doClear = this.doClear.bind(this);
+        this.doImageClear = this.doImageClear.bind(this);
         this.validation = this.validation.bind(this);
         this.getTargetData = this.getTargetData.bind(this);
     }
@@ -135,6 +141,17 @@ class RestaurantRegist extends Component{
             </Form.Control>
         );
     }
+
+    createPhoto(){
+        let contentPhoto = [];
+        if (this.state.stragePhoto == '') {
+            contentPhoto.push(<Form.File key='photo_input' id="photo" filename={this.state.photo} onChange={this.onChangePhoto} />);
+        } else {
+            contentPhoto.push(<Image key='photo' src={this.state.photoURL}/>);
+            contentPhoto.push(<Button key="photo_clear" variant="outline-secondary" className={common.buttonMiddle + ' ' + common.vertical_bottom}  onClick={this.doImageClear} >画像クリア</Button>);
+        }
+        return contentPhoto;
+    }
     
     doRegist(e){
         let username = this.props.username;
@@ -196,7 +213,15 @@ class RestaurantRegist extends Component{
             visitDay: now.getDate(),
             category: '',
             review: '',
-            photo: ''
+            photo: '',
+            stragePhoto: ''
+        });
+    }
+
+    doImageClear(){
+        this.setState({
+            photo: '',
+            stragePhoto: ''
         });
     }
 
@@ -219,6 +244,13 @@ class RestaurantRegist extends Component{
 
             if (review && review.length != 0) {
                 let date = new Date(Date.parse(review[0].visitDate));
+                if (review[0].photo != '') {
+                    let storageRef = firebase.storage().ref('/review_image/' + review[0].photo);
+                    storageRef.getDownloadURL().then((url) => {
+                        this.setState({ photoURL: url + '/170x170' });
+                    });
+                }
+    
                 this.setState({
                     name: review[0].name,
                     score: review[0].score,
@@ -227,7 +259,9 @@ class RestaurantRegist extends Component{
                     visitMonth: date.getMonth() + 1,
                     visitDay: date.getDate(),
                     category: review[0].category,
-                    review: review[0].review
+                    review: review[0].review,
+                    photo: review[0].photo,
+                    stragePhoto: review[0].photo
                 });    
             }
         });
@@ -333,8 +367,8 @@ class RestaurantRegist extends Component{
                             <Col sm={4} className={common.form_div}>
                                 <strong>画像：</strong>
                             </Col>
-                            <Col sm={8} className={common.form_div}>
-                                <Form.File id="photo" filename={this.state.photo} onChange={this.onChangePhoto} />
+                            <Col sm={8} className={common.form_div + ' ' + common.vertical_bottom}>
+                                {this.createPhoto()}
                             </Col>
                             <hr />
                             <Col sm={12} className={common.form_buttom_div}>
