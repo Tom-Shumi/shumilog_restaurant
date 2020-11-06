@@ -4,6 +4,7 @@ import firebase from 'firebase';
 import {Button, Row, Col, Modal, Image} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
+import Router from 'next/router';
 
 class RestaurantList extends Component{
     constructor(props){
@@ -17,6 +18,7 @@ class RestaurantList extends Component{
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose  = this.handleClose.bind(this);
+        this.doDelete  = this.doDelete.bind(this);
     }
     
     handleShow(e) {
@@ -141,7 +143,9 @@ class RestaurantList extends Component{
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
-                        <Col sm={1} key={'delete' + i} className={common.tableBody}></Col>
+                        <Col sm={1} key={'delete' + i} className={common.tableBody}>
+                            <Button key={'deleteButton' + i} variant="outline-secondary" onClick={this.doDelete} className={common.buttonSmall} data-no={i} >削除</Button>
+                        </Col>
                     </Row>
                 );
             }
@@ -181,6 +185,31 @@ class RestaurantList extends Component{
                 {content}
             </div>
         )
+    }
+
+    doDelete(e){
+        let no = e.target.getAttribute('data-no');
+        let username = this.props.username;
+        let db = firebase.database();
+        db.ref('Reviews/' + username).orderByChild("key").equalTo(this.state.review[no]['name'] + '_' + this.state.review[no]['visitDate']).on('value', (snapshot)=>{
+            let target = snapshot.val() || null;
+            if (target) {
+                let key = Object.keys(target)[0];
+                let del = db.ref('Reviews/' + username + '/' + key);
+                del.remove();  
+            }
+        });
+        this.props.dispatch({
+            type: 'UPDATE_INFO',
+            value: {
+                login: true,
+                username: this.props.username,
+                data: [],
+                actionURL: '/restaurant_list',
+                message: '削除が完了しました。'
+            }
+        });
+        Router.push('/restaurant_info');
     }
 
     render(){

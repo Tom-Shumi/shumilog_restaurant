@@ -346,7 +346,7 @@ class RestaurantRegist extends Component{
                             </Col>
                             <Col sm={8} className={common.form_div}>
                                 <Col sm={4}>
-                                        <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.price_text} />円
+                                        <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.price_text} min="0" />円
                                 </Col>
                             </Col>
                             <hr />
