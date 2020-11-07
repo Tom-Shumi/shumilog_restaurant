@@ -13,34 +13,58 @@ class RestaurantList extends Component{
             username: '',
             loading: true,
             review: null,
-            show: false,
+            detailModalShow: false,
+            searchModalShow: false,
             no: 0,
         }
-        this.handleShow = this.handleShow.bind(this);
-        this.handleClose  = this.handleClose.bind(this);
+        this.detailModalShow = this.detailModalShow.bind(this);
+        this.detailModalClose  = this.detailModalClose.bind(this);
+        this.searchModalShow = this.searchModalShow.bind(this);
+        this.searchModalClose  = this.searchModalClose.bind(this);
         this.doDelete  = this.doDelete.bind(this);
     }
     
-    handleShow(e) {
+    // 詳細モーダル表示
+    detailModalShow(e) {
         this.setState({ 
             no: e.target.getAttribute('data-no'),
-            show: true,
+            detailModalShow: true,
             photoURL: ''
         })
 
     }
-    handleClose() {
+
+    // 詳細モーダル非表示
+    detailModalClose() {
         this.setState({
-            show: false,
+            detailModalShow: false,
             photoURL: ''
          });
     }
 
+    // 検索モーダル表示
+    searchModalShow(e) {
+        this.setState({ 
+            searchModalShow: true
+        });
+
+    }
+
+    // 検索モーダル非表示
+    searchModalClose() {
+        this.setState({
+            searchModalShow: false
+         });
+    }
+
     componentDidMount() {
+        // 認証
         this.getAuth(this.props.requestId);
+        // 表示データ取得
         this.getData();
     }
 
+    // 認証
     getAuth(i){
         if (i != undefined) {
             let db = firebase.database();
@@ -72,6 +96,7 @@ class RestaurantList extends Component{
         }
     }
 
+    // 表示データ取得
     getData(){
         let name = this.props.username;
         if (name == ''){
@@ -99,24 +124,27 @@ class RestaurantList extends Component{
         });
     }
 
+    // ヘッダーボタン作成
     createButton(){
         return (
             <div key="contentButton">
-                <Button key="search" variant="outline-danger" className={common.buttonMiddle}>レビュー検索</Button>
+                <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>レビュー検索</Button>
                 <Link href="/restaurant_regist">
                         <Button key="regist" variant="danger" className={common.buttonMiddle}>レビュー登録</Button>
                 </Link>
-                <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン一覧</Button>
+                {/* <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン一覧</Button> */}
             </div>
         );
     }
 
+    // 一覧作成
     createTable(){
         let content = [];
         let review = this.state.review;
         if (review == null || review.length == 0) {
-            content.push(<div key="noData">データがありません。</div>);
+            content.push(<div className={common.noData} key="noData">データがありません。</div>);
         } else {
+            // 一覧ヘッダー部
             content.push(
                 <Row key={'tableHeader'}>
                     <Col sm={2} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
@@ -128,12 +156,13 @@ class RestaurantList extends Component{
                     <Col sm={1} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
                 </Row>
             );
+            // 一覧ボディ部
             for (let i in review) {
                 content.push(
                     <Row key={'tableBody' + i}>
                         <Col sm={2} key={'visitDate' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['visitDate']}</Col>
                         <Col sm={3} key={'name' + i} className={common.tableBody}>
-                            <a key={'a_name' + i} onClick={this.handleShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
+                            <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
                         </Col>
                         <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
                         <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
@@ -150,35 +179,37 @@ class RestaurantList extends Component{
                 );
             }
 
+            // 詳細モーダル用の画像取得
             if (review[this.state.no]['photo'] != '') {
                 let storageRef = firebase.storage().ref('/review_image/' + review[this.state.no]['photo']);
                 storageRef.getDownloadURL().then((url) => {
                     this.setState({ photoURL: url + '/170x170' });
                 });    
             }
-
+            
+            // 詳細モーダル部
             content.push(
-                <Modal show={this.state.show} onHide={this.handleClose} key='modal'>
+                <Modal show={this.state.detailModalShow} onHide={this.detailModalClose} key='detailModal'>
                     <Modal.Header closeButton>
                         <Modal.Title>{review[this.state.no]['name']}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row key={'modalBody'} className={common.modalBody}>
-                            <Col sm={3} key={'modalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>
-                            <Col sm={9} key={'modalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
-                            <Col sm={3} key={'modalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>
-                            <Col sm={9} key={'modalBodyPhoto'} className={common.tableBody}>
+                        <Row key={'detailModalBody'} className={common.modalBody}>
+                            <Col sm={3} key={'detailModalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>
+                            <Col sm={9} key={'detailModalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
+                            <Col sm={3} key={'detailModalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>
+                            <Col sm={9} key={'detailModalBodyPhoto'} className={common.tableBody}>
                                 {review[this.state.no]['photo'] == '' ? '' : <Image src={this.state.photoURL}/>}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="dark" onClick={this.handleClose}>
+                        <Button variant="dark" onClick={this.detailModalClose}>
                             閉じる
                         </Button>
                     </Modal.Footer>
-              </Modal>
-            )
+                </Modal>
+            );
         }
         return (
             <div key="contentTable">
@@ -187,29 +218,66 @@ class RestaurantList extends Component{
         )
     }
 
+    // 検索モーダル作成
+    createSearchModal(){
+        let content = [];
+        content.push(
+            <Modal show={this.state.searchModalShow} onHide={this.searchModalClose} key='searchModal'>
+                <Modal.Header closeButton>
+                    <Modal.Title>検索</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    メンテナンス中。。。
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="dark" onClick={this.searchModalClose}>
+                        閉じる
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+
+        return (
+            <div key="searchModalDiv">
+                {content}
+            </div>
+        )
+    }
+
+    // レビュー削除
     doDelete(e){
-        let no = e.target.getAttribute('data-no');
-        let username = this.props.username;
-        let db = firebase.database();
-        db.ref('Reviews/' + username).orderByChild("key").equalTo(this.state.review[no]['name'] + '_' + this.state.review[no]['visitDate']).on('value', (snapshot)=>{
-            let target = snapshot.val() || null;
-            if (target) {
-                let key = Object.keys(target)[0];
-                let del = db.ref('Reviews/' + username + '/' + key);
-                del.remove();  
-            }
-        });
-        this.props.dispatch({
-            type: 'UPDATE_INFO',
-            value: {
-                login: true,
-                username: this.props.username,
-                data: [],
-                actionURL: '/restaurant_list',
-                message: '削除が完了しました。'
-            }
-        });
-        Router.push('/restaurant_info');
+        if (confirm("レビューを削除します。よろしいですか？")){
+            let no = e.target.getAttribute('data-no');
+            let username = this.props.username;
+            let db = firebase.database();
+            db.ref('Reviews/' + username).orderByChild("key").equalTo(this.state.review[no]['name'] + '_' + this.state.review[no]['visitDate']).on('value', (snapshot)=>{
+                let target = snapshot.val() || null;
+                if (target) {
+                    let key = Object.keys(target)[0];
+                    let del = db.ref('Reviews/' + username + '/' + key);
+                    del.remove();
+    
+                    // 画像の削除
+                    if (this.state.review[no]['photo'] != '') {
+                        let delImage = firebase.storage().ref('/review_image/' + this.state.review[no]['photo']);
+                        delImage.delete();
+                    }
+                }
+            });
+
+            // 共通メッセージ画面遷移
+            this.props.dispatch({
+                type: 'UPDATE_INFO',
+                value: {
+                    login: true,
+                    username: this.props.username,
+                    data: [],
+                    actionURL: '/restaurant_list',
+                    message: '削除が完了しました。'
+                }
+            });
+            Router.push('/restaurant_info');
+        }
     }
 
     render(){
@@ -219,6 +287,7 @@ class RestaurantList extends Component{
         } else {
             content.push(this.createButton());
             content.push(this.createTable());
+            content.push(this.createSearchModal());
         }
         return (
             <div>

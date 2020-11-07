@@ -58,10 +58,14 @@ class RestaurantRegist extends Component{
     }
 
     componentDidMount() {
+        // 未ログインの場合はエラー画面遷移
         if (this.props.login == false) {
             Router.push('/restaurant_error');
         }
+
+        // レビュー編集時
         if (Router.query.n != undefined && Router.query.d != undefined) {
+            // 元データ取得
             this.getTargetData();
             this.setState({updateFlg: 1});
         }
@@ -103,7 +107,7 @@ class RestaurantRegist extends Component{
         this.setState({price:e.target.value});
     }
     
-
+    //　点数の入力部作成
     createEvaluation(){
         let stars = [];
         for (let i = 5; i >= 1; i--) {
@@ -125,9 +129,11 @@ class RestaurantRegist extends Component{
         );
     }
 
+    //　カテゴリリスト作成
     createCategoryList(){
         let contentCategoryList = [];
         contentCategoryList.push(
+            // 初期表示用のダミー
             <option key={"category"} value=''></option>
         )
         for (let i in this.state.categoryList){
@@ -142,6 +148,7 @@ class RestaurantRegist extends Component{
         );
     }
 
+    // 画像表示部
     createPhoto(){
         let contentPhoto = [];
         if (this.state.stragePhoto == '') {
@@ -153,55 +160,66 @@ class RestaurantRegist extends Component{
         return contentPhoto;
     }
     
+    // レビュー登録
     doRegist(e){
-        let username = this.props.username;
-        let photoName = '';
-        
-        if (this.state.photo != '') {
-            let extension = this.state.photo.name.split('.')[1];
-            photoName = Math.random().toString(36).substring(2) + '.' + extension;
-            let storageRef = firebase.storage().ref('/review_image/' + photoName);
-            storageRef.put(this.state.photo);
-        };
+        if (confirm("レビューを登録します。よろしいですか？")){
+            let username = this.props.username;
+            let photoName = '';
+            
+            // 画像が設定されている場合は登録
+            if (this.state.photo != '') {
+                let extension = this.state.photo.name.split('.')[1];
+                photoName = Math.random().toString(36).substring(2) + '.' + extension;
+                let storageRef = firebase.storage().ref('/review_image/' + photoName);
+                storageRef.put(this.state.photo);
+            };
+    
+            // レビュー登録用データ作成
+            let date = this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay;
+            let data = {
+                name: this.state.name,
+                category: this.state.category,
+                visitDate: date,
+                price: this.state.price,
+                score: this.state.score,
+                review: this.state.review,
+                photo: photoName,
+                key: this.state.name + '_' + date
+            }
+            let db = firebase.database();
+            // 登録の場合
+            if (this.state.updateFlg == 0){
+                let ref = db.ref('Reviews/' + username);
+                ref.push(data);    
 
-        let date = this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay;
-        let data = {
-            name: this.state.name,
-            category: this.state.category,
-            visitDate: date,
-            price: this.state.price,
-            score: this.state.score,
-            review: this.state.review,
-            photo: photoName,
-            key: this.state.name + '_' + date
-        }
-        let db = firebase.database();
-        if (this.state.updateFlg == 0){
-            let ref = db.ref('Reviews/' + username);
-            ref.push(data);    
-        } else {
-            db.ref('Reviews/' + username).orderByChild("key").equalTo(Router.query.n + '_' + Router.query.d).on('value', (snapshot)=>{
-                let target = snapshot.val() || null;
-                if (target) {
-                    let key = Object.keys(target)[0];
-                    let update = db.ref('Reviews/' + username + '/' + key);
-                    update.set(data);  
+            // 更新の場合
+            } else {
+                db.ref('Reviews/' + username).orderByChild("key").equalTo(Router.query.n + '_' + Router.query.d).on('value', (snapshot)=>{
+                    let target = snapshot.val() || null;
+                    if (target) {
+                        let key = Object.keys(target)[0];
+                        let update = db.ref('Reviews/' + username + '/' + key);
+                        update.set(data);  
+                    }
+                });
+            }
+
+            // 共通メッセージ画面遷移
+            this.props.dispatch({
+                type: 'UPDATE_INFO',
+                value: {
+                    login: true,
+                    username: this.props.username,
+                    data: [],
+                    actionURL: '/restaurant_list',
+                    message: '登録が完了しました。'
                 }
             });
+            Router.push('/restaurant_info');
         }
-        this.props.dispatch({
-            type: 'UPDATE_INFO',
-            value: {
-                login: true,
-                username: this.props.username,
-                data: [],
-                actionURL: '/restaurant_list',
-                message: '登録が完了しました。'
-            }
-        });
-        Router.push('/restaurant_info');
     }
 
+    // 入力情報クリア
     doClear(e){
         let now = new Date();
         this.setState({
@@ -218,6 +236,7 @@ class RestaurantRegist extends Component{
         });
     }
 
+    // 画像のクリア
     doImageClear(){
         this.setState({
             photo: '',
@@ -225,48 +244,56 @@ class RestaurantRegist extends Component{
         });
     }
 
+    // 編集時用の初期表示データ取得
     getTargetData(){
         let name = this.props.username;
         let db = firebase.database();
         let ref = db.ref('Reviews/');    
         ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
-            let d = snapshot.val()[name];
-            let reviewArr = [];
-            for(let i in d){
-                reviewArr.push(d[i]);
-            }
-            
-            let review = reviewArr.filter(function(item, index){
-                if (item.name == Router.query.n) return true;
-            }).filter(function(item, index){
-                if (item.visitDate == Router.query.d) return true;
-            });
-
-            if (review && review.length != 0) {
-                let date = new Date(Date.parse(review[0].visitDate));
-                if (review[0].photo != '') {
-                    let storageRef = firebase.storage().ref('/review_image/' + review[0].photo);
-                    storageRef.getDownloadURL().then((url) => {
-                        this.setState({ photoURL: url + '/170x170' });
-                    });
+            let target = snapshot.val() || null;
+            if (target) {
+                let d = target[name];
+                let reviewArr = [];
+                //　一時的に全件取得
+                for(let i in d){
+                    reviewArr.push(d[i]);
                 }
+                
+                // 編集用のデータのみに絞り込み
+                let review = reviewArr.filter(function(item, index){
+                    if (item.name == Router.query.n) return true;
+                }).filter(function(item, index){
+                    if (item.visitDate == Router.query.d) return true;
+                });
     
-                this.setState({
-                    name: review[0].name,
-                    score: review[0].score,
-                    price: review[0].price,
-                    visitYear: date.getFullYear(),
-                    visitMonth: date.getMonth() + 1,
-                    visitDay: date.getDate(),
-                    category: review[0].category,
-                    review: review[0].review,
-                    photo: review[0].photo,
-                    stragePhoto: review[0].photo
-                });    
+                if (review && review.length != 0) {
+                    let date = new Date(Date.parse(review[0].visitDate));
+                    // 画像取得
+                    if (review[0].photo != '') {
+                        let storageRef = firebase.storage().ref('/review_image/' + review[0].photo);
+                        storageRef.getDownloadURL().then((url) => {
+                            this.setState({ photoURL: url + '/170x170' });
+                        });
+                    }
+        
+                    this.setState({
+                        name: review[0].name,
+                        score: review[0].score,
+                        price: review[0].price,
+                        visitYear: date.getFullYear(),
+                        visitMonth: date.getMonth() + 1,
+                        visitDay: date.getDate(),
+                        category: review[0].category,
+                        review: review[0].review,
+                        photo: review[0].photo,
+                        stragePhoto: review[0].photo
+                    });    
+                }
             }
         });
     }
 
+    // 入力チェック
     validation(){
         let error = false;
         let errorMsg = '';

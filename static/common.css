@@ -237,3 +237,9 @@ Form{
 .modalBody{
 	padding: 10px;
 }
+
+.noData{
+	text-align: center;
+	color: red;
+	font-size: 24px;
+}
