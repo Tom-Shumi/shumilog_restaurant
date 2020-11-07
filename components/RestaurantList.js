@@ -153,7 +153,7 @@ class RestaurantList extends Component{
         } else {
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenation'}>
+                <Row key={'tablePagenationTop'}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
@@ -200,7 +200,7 @@ class RestaurantList extends Component{
 
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenation'}>
+                <Row key={'tablePagenationBottom'}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
