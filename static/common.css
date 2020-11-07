@@ -243,3 +243,7 @@ Form{
 	color: red;
 	font-size: 24px;
 }
+
+.pagenation_right{
+	margin-left: 85%;
+}

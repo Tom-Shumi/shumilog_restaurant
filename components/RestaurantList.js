@@ -5,6 +5,7 @@ import {Button, Row, Col, Modal, Image} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 import Router from 'next/router';
+import Pagination from "material-ui-flat-pagination";
 
 class RestaurantList extends Component{
     constructor(props){
@@ -12,10 +13,12 @@ class RestaurantList extends Component{
         this.state = {
             username: '',
             loading: true,
-            review: null,
+            review: [],
             detailModalShow: false,
             searchModalShow: false,
             no: 0,
+            offset: 0,
+            parPage: 10
         }
         this.detailModalShow = this.detailModalShow.bind(this);
         this.detailModalClose  = this.detailModalClose.bind(this);
@@ -55,6 +58,10 @@ class RestaurantList extends Component{
         this.setState({
             searchModalShow: false
          });
+    }
+
+    handleClickPagination(offset){
+        this.setState({ offset })
     }
 
     componentDidMount() {
@@ -140,10 +147,22 @@ class RestaurantList extends Component{
     // 一覧作成
     createTable(){
         let content = [];
-        let review = this.state.review;
+        let review = this.state.review.slice(this.state.offset, this.state.offset + this.state.parPage);
         if (review == null || review.length == 0) {
             content.push(<div className={common.noData} key="noData">データがありません。</div>);
         } else {
+            // 一覧ページネーション部
+            content.push(
+                <Row key={'tablePagenation'}>
+                    <Pagination
+                        limit={this.state.parPage}
+                        offset={this.state.offset}
+                        total={this.state.review.length}
+                        onClick={(e, offset) => this.handleClickPagination(offset)}
+                        className={common.pagenation_right}
+                    />
+                </Row>
+            )
             // 一覧ヘッダー部
             content.push(
                 <Row key={'tableHeader'}>
@@ -178,6 +197,19 @@ class RestaurantList extends Component{
                     </Row>
                 );
             }
+
+            // 一覧ページネーション部
+            content.push(
+                <Row key={'tablePagenation'}>
+                    <Pagination
+                        limit={this.state.parPage}
+                        offset={this.state.offset}
+                        total={this.state.review.length}
+                        onClick={(e, offset) => this.handleClickPagination(offset)}
+                        className={common.pagenation_right}
+                    />
+                </Row>
+            )
 
             // 詳細モーダル用の画像取得
             if (review[this.state.no]['photo'] != '') {
