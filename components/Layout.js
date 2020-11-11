@@ -19,10 +19,10 @@ class Layout extends Component {
                 <Navbar className={common.navbarCustom}>
                     <Container>
                         <div className={common.navbarDivLeft}>
-                            <a className={common.navbarTitle} href="http://localhost:8000/menu/">Shumi Log</a>
+                            <a className={common.navbarTitle} href={process.env.REACT_APP_SHUMILOG_URL + "/menu/"}>Shumi Log</a>
                         </div>
                         <div className={common.navbarDivRight}>
-                            <a className={common.navbarLink} href="http://localhost:8000/accounts/logout/">Log Out</a>
+                            <a className={common.navbarLink} href={process.env.REACT_APP_SHUMILOG_URL + "/accounts/logout/"}>Log Out</a>
                         </div>
                     </Container>
                 </Navbar>

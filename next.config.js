@@ -11,5 +11,6 @@ module.exports = withCSS(withSass({
         REACT_APP_MESSAGING_SENDER_ID: process.env.REACT_APP_MESSAGING_SENDER_ID,
         REACT_APP_APP_ID: process.env.REACT_APP_APP_ID,
         REACT_APP_MEASUREMENT_ID: process.env.REACT_APP_MEASUREMENT_ID,
+        REACT_APP_SHUMILOG_URL: process.env.REACT_APP_SHUMILOG_URL
       }
 }));

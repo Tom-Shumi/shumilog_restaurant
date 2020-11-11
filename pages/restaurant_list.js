@@ -4,7 +4,7 @@ import RestaurantList from '../components/RestaurantList';
 import firebase from 'firebase';
 
 const restaurant_list = withRouter(props => (
-    <Layout header="RestaurantList" title="レストラン レビュー 一覧" backURL="http://localhost:8000/menu/" backButtonDisplay="1">
+    <Layout header="RestaurantList" title="レストラン レビュー 一覧" backURL={process.env.REACT_APP_SHUMILOG_URL + "/menu/"} backButtonDisplay="1">
         <div>
             <RestaurantList requestId={props.router.query.i} />
         </div>
