@@ -122,7 +122,7 @@ class RestaurantList extends Component{
                     review.push(d[i]);
                 }
                 review.sort(function(val1,val2){
-                    return ( val1.visitDate < val2.visitDate ? 1 : -1);
+                    return ( val1.visitDate > val2.visitDate ? 1 : -1);
                 });    
             }
             this.setState({
@@ -139,7 +139,9 @@ class RestaurantList extends Component{
                 <Link href="/restaurant_regist">
                         <Button key="regist" variant="danger" className={common.buttonMiddle}>レビュー登録</Button>
                 </Link>
-                {/* <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン一覧</Button> */}
+                <Link href="/restaurant_interested_list">
+                    <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン一覧</Button>
+                </Link>
             </div>
         );
     }
@@ -227,6 +229,8 @@ class RestaurantList extends Component{
                     </Modal.Header>
                     <Modal.Body>
                         <Row key={'detailModalBody'} className={common.modalBody}>
+                            <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
+                            <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{review[this.state.no]['station']}　駅</Col>
                             <Col sm={3} key={'detailModalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>
                             <Col sm={9} key={'detailModalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>

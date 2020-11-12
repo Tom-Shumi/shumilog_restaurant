@@ -27,6 +27,7 @@ class RestaurantRegist extends Component{
             name: '',
             score: 1,
             price: '',
+            station: '',
             visitYear: now.getFullYear(),
             visitMonth: now.getMonth() + 1,
             visitDay: now.getDate(),
@@ -46,6 +47,7 @@ class RestaurantRegist extends Component{
         this.onChangeVisitDay = this.onChangeVisitDay.bind(this);
         this.onChangeReview = this.onChangeReview.bind(this);
         this.onChangePhoto = this.onChangePhoto.bind(this);
+        this.onChangeStation = this.onChangeStation.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
         this.createEvaluation = this.createEvaluation.bind(this);
         this.createCategoryList = this.createCategoryList.bind(this);
@@ -107,6 +109,10 @@ class RestaurantRegist extends Component{
         this.setState({price:e.target.value});
     }
     
+    onChangeStation(e){
+        this.setState({station:e.target.value});
+    }
+
     //　点数の入力部作成
     createEvaluation(){
         let stars = [];
@@ -168,10 +174,16 @@ class RestaurantRegist extends Component{
             
             // 画像が設定されている場合は登録
             if (this.state.photo != '') {
-                let extension = this.state.photo.name.split('.')[1];
-                photoName = Math.random().toString(36).substring(2) + '.' + extension;
-                let storageRef = firebase.storage().ref('/review_image/' + photoName);
-                storageRef.put(this.state.photo);
+                // 既に画像が設定されている編集時に画像を変更せずに行った場合
+                if (this.state.photo.name == undefined) {
+                    photoName = this.state.photo;
+                // 上記以外
+                } else {
+                    let extension = this.state.photo.name.split('.')[1];
+                    photoName = Math.random().toString(36).substring(2) + '.' + extension;
+                    let storageRef = firebase.storage().ref('/review_image/' + photoName);
+                    storageRef.put(this.state.photo);    
+                }
             };
     
             // レビュー登録用データ作成
@@ -181,6 +193,7 @@ class RestaurantRegist extends Component{
                 category: this.state.category,
                 visitDate: date,
                 price: this.state.price,
+                station: this.state.station,
                 score: this.state.score,
                 review: this.state.review,
                 photo: photoName,
@@ -226,6 +239,7 @@ class RestaurantRegist extends Component{
             name: '',
             score: 1,
             price: '',
+            station: '',
             visitYear: now.getFullYear(),
             visitMonth: now.getMonth() + 1,
             visitDay: now.getDate(),
@@ -280,6 +294,7 @@ class RestaurantRegist extends Component{
                         name: review[0].name,
                         score: review[0].score,
                         price: review[0].price,
+                        station: review[0].station,
                         visitYear: date.getFullYear(),
                         visitMonth: date.getMonth() + 1,
                         visitDay: date.getDate(),
@@ -316,6 +331,10 @@ class RestaurantRegist extends Component{
         if (!error && this.state.visitDay == '') {
             error = true;
             errorMsg = '来店日[日]を入力してください。';
+        }
+        if (!error && this.state.station == '') {
+            error = true;
+            errorMsg = '最寄り駅を入力してください。';
         }
         if (!error && this.state.price == '') {
             error = true;
@@ -369,11 +388,20 @@ class RestaurantRegist extends Component{
                             </Col>
                             <hr />
                             <Col sm={4} className={common.form_div}>
+                                <strong>最寄り駅：</strong>
+                            </Col>
+                            <Col sm={8} className={common.form_div}>
+                                <Col sm={4}>
+                                    <Form.Control type="text" size="30" value={this.state.station} onChange={this.onChangeStation} className={common.suffix_text} /> 駅
+                                </Col>
+                            </Col>
+                            <hr />
+                            <Col sm={4} className={common.form_div}>
                                 <strong>金額：</strong>
                             </Col>
                             <Col sm={8} className={common.form_div}>
                                 <Col sm={4}>
-                                        <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.price_text} min="0" />円
+                                        <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.suffix_text} min="0" />円
                                 </Col>
                             </Col>
                             <hr />
