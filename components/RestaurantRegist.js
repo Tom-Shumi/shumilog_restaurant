@@ -168,7 +168,7 @@ class RestaurantRegist extends Component{
     
     // レビュー登録
     doRegist(e){
-        if (confirm("レビューを登録します。よろしいですか？")){
+        if (confirm("登録します。よろしいですか？")){
             let username = this.props.username;
             let photoName = '';
             

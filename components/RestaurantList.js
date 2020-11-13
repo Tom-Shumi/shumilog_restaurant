@@ -11,7 +11,6 @@ class RestaurantList extends Component{
     constructor(props){
         super(props);
         this.state = {
-            username: '',
             loading: true,
             review: [],
             detailModalShow: false,
@@ -82,7 +81,6 @@ class RestaurantList extends Component{
 
                 if(d != undefined){
                     let username = d[i]['id'];
-                    this.setState({username: username});
                     this.props.dispatch({
                         type: 'UPDATE_INFO',
                         value: {
@@ -135,12 +133,12 @@ class RestaurantList extends Component{
     createButton(){
         return (
             <div key="contentButton">
-                <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>レビュー検索</Button>
+                <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
                 <Link href="/restaurant_regist">
-                        <Button key="regist" variant="danger" className={common.buttonMiddle}>レビュー登録</Button>
+                        <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
                 </Link>
                 <Link href="/restaurant_interested_list">
-                    <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン一覧</Button>
+                    <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン</Button>
                 </Link>
             </div>
         );
