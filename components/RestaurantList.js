@@ -59,6 +59,7 @@ class RestaurantList extends Component{
          });
     }
 
+    // ページネーション
     handleClickPagination(offset){
         this.setState({ offset })
     }
@@ -169,8 +170,8 @@ class RestaurantList extends Component{
                     <Col sm={2} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
                     <Col sm={3} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
                     <Col sm={2} key='category' className={common.tableHeader}><strong>カテゴリ</strong></Col>
-                    <Col sm={1} key='score' className={common.tableHeader}><strong>点数</strong></Col>
                     <Col sm={2} key='price' className={common.tableHeader}><strong>金額</strong></Col>
+                    <Col sm={1} key='score' className={common.tableHeader}><strong>点数</strong></Col>
                     <Col sm={1} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
                     <Col sm={1} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
                 </Row>
@@ -184,8 +185,8 @@ class RestaurantList extends Component{
                             <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
                         </Col>
                         <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
-                        <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
                         <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
+                        <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
                         <Col sm={1} key={'edit' + i} className={common.tableBody}>
                             <Link href={"/restaurant_regist?n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
@@ -228,7 +229,7 @@ class RestaurantList extends Component{
                     <Modal.Body>
                         <Row key={'detailModalBody'} className={common.modalBody}>
                             <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
-                            <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{review[this.state.no]['station']}　駅</Col>
+                            <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{review[this.state.no]['station']}駅</Col>
                             <Col sm={3} key={'detailModalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>
                             <Col sm={9} key={'detailModalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>
@@ -278,9 +279,9 @@ class RestaurantList extends Component{
         )
     }
 
-    // レビュー削除
+    // 削除
     doDelete(e){
-        if (confirm("レビューを削除します。よろしいですか？")){
+        if (confirm("削除します。よろしいですか？")){
             let no = e.target.getAttribute('data-no');
             let username = this.props.username;
             let db = firebase.database();

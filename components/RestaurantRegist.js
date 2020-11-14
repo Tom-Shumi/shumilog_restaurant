@@ -64,8 +64,7 @@ class RestaurantRegist extends Component{
         if (this.props.login == false) {
             Router.push('/restaurant_error');
         }
-
-        // レビュー編集時
+        // 編集時
         if (Router.query.n != undefined && Router.query.d != undefined) {
             // 元データ取得
             this.getTargetData();
@@ -166,7 +165,7 @@ class RestaurantRegist extends Component{
         return contentPhoto;
     }
     
-    // レビュー登録
+    // 登録
     doRegist(e){
         if (confirm("登録します。よろしいですか？")){
             let username = this.props.username;

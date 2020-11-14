@@ -46,6 +46,45 @@ class RestaurantInterestedRegist extends Component{
         if (this.props.login == false) {
             Router.push('/restaurant_error');
         }
+        // レビュー編集時
+        if (Router.query.n != undefined) {
+            // 元データ取得
+            this.getTargetData();
+            this.setState({updateFlg: 1});
+        }
+    }
+
+    // 編集時用の初期表示データ取得
+    getTargetData(){
+        let name = this.props.username;
+        let db = firebase.database();
+        let ref = db.ref('Interested/');    
+        ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
+            let target = snapshot.val() || null;
+            if (target) {
+                let d = target[name];
+                let arr = [];
+                //　一時的に全件取得
+                for(let i in d){
+                    arr.push(d[i]);
+                }
+                
+                // 編集用のデータのみに絞り込み
+                let data = arr.filter(function(item, index){
+                    if (item.name == Router.query.n) return true;
+                });
+    
+                if (data && data.length != 0) {
+                    this.setState({
+                        name: data[0].name,
+                        score: data[0].score,
+                        price: data[0].price,
+                        station: data[0].station,
+                        category: data[0].category
+                    });    
+                }
+            }
+        });
     }
 
     onChangeName(e){
@@ -109,12 +148,12 @@ class RestaurantInterestedRegist extends Component{
         );
     }
 
-    // レビュー登録
+    // 登録
     doRegist(e){
         if (confirm("登録します。よろしいですか？")){
             let username = this.props.username;
 
-            // レビュー登録用データ作成
+            // 登録用データ作成
             let data = {
                 name: this.state.name,
                 category: this.state.category,
@@ -126,11 +165,17 @@ class RestaurantInterestedRegist extends Component{
             // 登録の場合
             if (this.state.updateFlg == 0){
                 let ref = db.ref('Interested/' + username);
-                ref.push(data);    
-
+                ref.push(data);
             // 更新の場合
             } else {
-
+                db.ref('Interested/' + username).orderByChild("name").equalTo(Router.query.n).on('value', (snapshot)=>{
+                    let target = snapshot.val() || null;
+                    if (target) {
+                        let key = Object.keys(target)[0];
+                        let update = db.ref('Interested/' + username + '/' + key);
+                        update.set(data);  
+                    }
+                });
             }
 
             // 共通メッセージ画面遷移
@@ -228,7 +273,7 @@ class RestaurantInterestedRegist extends Component{
                             </Col>
                             <hr />
                             <Col sm={4} className={common.form_div}>
-                                <strong>点数：</strong>
+                                <strong>気になる度：</strong>
                             </Col>
                             <Col sm={8} className={common.form_div}>
                                 {this.createEvaluation()}
