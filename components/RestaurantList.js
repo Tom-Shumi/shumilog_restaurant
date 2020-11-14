@@ -187,12 +187,12 @@ class RestaurantList extends Component{
                         <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
                         <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
                         <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
-                        <Col sm={1} key={'edit' + i} className={common.tableBody}>
+                        <Col sm={1} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_regist?n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
-                        <Col sm={1} key={'delete' + i} className={common.tableBody}>
+                        <Col sm={1} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Button key={'deleteButton' + i} variant="outline-secondary" onClick={this.doDelete} className={common.buttonSmall} data-no={i} >削除</Button>
                         </Col>
                     </Row>

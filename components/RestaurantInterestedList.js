@@ -138,12 +138,12 @@ class RestaurantInterestedList extends Component{
                         <Col sm={2} key={'station' + i} className={common.tableBody}>{list[i]['station']}駅</Col>
                         <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['price']}円</Col>
                         <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['score']}点</Col>
-                        <Col sm={1} key={'edit' + i} className={common.tableBody}>
+                        <Col sm={1} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_interested_regist?n=" + list[i]['name']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
-                        <Col sm={1} key={'delete' + i} className={common.tableBody}>
+                        <Col sm={1} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Button key={'deleteButton' + i} variant="outline-secondary" onClick={this.doDelete} className={common.buttonSmall} data-no={i} >削除</Button>
                         </Col>
                     </Row>

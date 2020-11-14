@@ -31,7 +31,7 @@ class Layout extends Component {
                         <div className={common.pageContent}>
                             <h1 className={common.pageTitle}>{this.props.title}</h1>
                             {this.props.children}
-                            <div className={common.buttonBackDiv}>
+                            <div className={common.text_align_center}>
                                 <Link href={this.props.backURL}>
                                     {this.props.backButtonDisplay == "1" ?
                                         <Button variant="dark" className={common.buttonBack}>戻る</Button>

@@ -87,10 +87,6 @@ Form{
 	font-weight: 400;
 }
 
-.buttonBackDiv{
-	text-align: center;
-}
-
 .buttonBack{
 	width: 120px;
 	height: 40px;
@@ -101,7 +97,6 @@ Form{
 	width: 60px;
 	height: 30px;
 	font-size: 12px;
-	margin: 0px 15px;
 }
 
 .buttonMiddle{
@@ -183,7 +178,7 @@ Form{
 	display: inline;
 }
 
-.form_buttom_div{
+.text_align_center{
 	text-align: center;
 }
 

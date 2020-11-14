@@ -425,7 +425,7 @@ class RestaurantRegist extends Component{
                                 {this.createPhoto()}
                             </Col>
                             <hr />
-                            <Col sm={12} className={common.form_buttom_div}>
+                            <Col sm={12} className={common.text_align_center}>
                                 <Button key="regist" variant="warning" className={common.buttonMiddle}  onClick={this.doRegist}  disabled={error} >登録</Button>
                                 <Button key="clear" variant="outline-secondary" className={common.buttonMiddle}  onClick={this.doClear}>クリア</Button>
                             </Col>

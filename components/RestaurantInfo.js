@@ -12,7 +12,7 @@ class RestaurantList extends Component{
 
     render(){
         return (
-            <div className={common.buttonBackDiv}>
+            <div className={common.text_align_center}>
                 <div className={common.message_frame}>
                     <p>{this.props.message}</p>
                 </div>
