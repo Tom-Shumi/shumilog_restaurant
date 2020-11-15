@@ -134,13 +134,21 @@ class RestaurantList extends Component{
     createButton(){
         return (
             <div key="contentButton">
-                <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
-                <Link href="/restaurant_regist">
-                        <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
-                </Link>
-                <Link href="/restaurant_interested_list">
-                    <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン</Button>
-                </Link>
+                <Row>
+                    <Col sm={2} xs={6}>
+                        <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
+                    </Col>
+                    <Col sm={2} xs={6}>
+                        <Link href="/restaurant_regist">
+                            <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
+                        </Link>
+                    </Col>
+                    <Col sm={8} xs={12}>
+                        <Link href="/restaurant_interested_list">
+                            <Button key="goInterestedList" variant="warning" className={common.buttonLarge + ' ' + common.float_right}>気になるレストラン</Button>
+                        </Link>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -154,45 +162,44 @@ class RestaurantList extends Component{
         } else {
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenationTop'}>
+                <Row key={'tablePagenationTop'} className={common.pagination}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
                         total={this.state.review.length}
                         onClick={(e, offset) => this.handleClickPagination(offset)}
-                        className={common.pagenation_right}
                     />
                 </Row>
             )
             // 一覧ヘッダー部
             content.push(
                 <Row key={'tableHeader'}>
-                    <Col sm={2} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
-                    <Col sm={3} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
-                    <Col sm={2} key='category' className={common.tableHeader}><strong>カテゴリ</strong></Col>
-                    <Col sm={2} key='price' className={common.tableHeader}><strong>金額</strong></Col>
-                    <Col sm={1} key='score' className={common.tableHeader}><strong>点数</strong></Col>
-                    <Col sm={1} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
-                    <Col sm={1} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
+                    <Col sm={2} xs={4} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
+                    <Col sm={3} xs={8} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
+                    <Col sm={2} xs={12} key='category' className={common.tableHeader + ' ' + common.display_none_sm}><strong>カテゴリ</strong></Col>
+                    <Col sm={2} xs={4} key='price' className={common.tableHeader}><strong>金額</strong></Col>
+                    <Col sm={1} xs={2} key='score' className={common.tableHeader}><strong>点数</strong></Col>
+                    <Col sm={1} xs={3} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
+                    <Col sm={1} xs={3} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
                 </Row>
             );
             // 一覧ボディ部
             for (let i in review) {
                 content.push(
                     <Row key={'tableBody' + i}>
-                        <Col sm={2} key={'visitDate' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['visitDate']}</Col>
-                        <Col sm={3} key={'name' + i} className={common.tableBody}>
+                        <Col sm={2} xs={4} key={'visitDate' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['visitDate']}</Col>
+                        <Col sm={3} xs={8} key={'name' + i} className={common.tableBody}>
                             <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
                         </Col>
-                        <Col sm={2} key={'category' + i} className={common.tableBody}>{review[i]['category']}</Col>
-                        <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
-                        <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
-                        <Col sm={1} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
+                        <Col sm={2} xs={12} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{review[i]['category']}</Col>
+                        <Col sm={2} xs={4} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
+                        <Col sm={1} xs={2} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
+                        <Col sm={1} xs={3} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_regist?n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
-                        <Col sm={1} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
+                        <Col sm={1} xs={3} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Button key={'deleteButton' + i} variant="outline-secondary" onClick={this.doDelete} className={common.buttonSmall} data-no={i} >削除</Button>
                         </Col>
                     </Row>
@@ -201,13 +208,12 @@ class RestaurantList extends Component{
 
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenationBottom'}>
+                <Row key={'tablePagenationBottom'} className={common.pagination}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
                         total={this.state.review.length}
                         onClick={(e, offset) => this.handleClickPagination(offset)}
-                        className={common.pagenation_right}
                     />
                 </Row>
             )
@@ -228,6 +234,8 @@ class RestaurantList extends Component{
                     </Modal.Header>
                     <Modal.Body>
                         <Row key={'detailModalBody'} className={common.modalBody}>
+                            <Col sm={3} key={'detailModalBodyHeaderCategory'} className={common.tableHeader + ' ' + common.display_none_bg}>カテゴリ</Col>
+                            <Col sm={9} key={'detailModalBodyCategory'} className={common.tableBody + ' ' + common.display_none_bg}>{review[this.state.no]['category']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
                             <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{review[this.state.no]['station']}駅</Col>
                             <Col sm={3} key={'detailModalBodyHeaderReview'} className={common.tableHeader}>レビュー</Col>

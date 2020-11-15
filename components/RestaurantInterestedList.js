@@ -107,13 +107,12 @@ class RestaurantInterestedList extends Component{
         } else {
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenationTop'}>
+                <Row key={'tablePagenationTop'} className={common.pagination}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
                         total={this.state.list.length}
                         onClick={(e, offset) => this.handleClickPagination(offset)}
-                        className={common.pagenation_right}
                     />
                 </Row>
             )
@@ -152,13 +151,12 @@ class RestaurantInterestedList extends Component{
 
             // 一覧ページネーション部
             content.push(
-                <Row key={'tablePagenationBottom'}>
+                <Row key={'tablePagenationBottom'} className={common.pagination}>
                     <Pagination
                         limit={this.state.parPage}
                         offset={this.state.offset}
                         total={this.state.list.length}
                         onClick={(e, offset) => this.handleClickPagination(offset)}
-                        className={common.pagenation_right}
                     />
                 </Row>
             )
