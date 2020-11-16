@@ -13,14 +13,52 @@ class RestaurantInterestedList extends Component{
         this.state = {
             list: [],
             loading: true,
+            detailModalShow: false,
+            searchModalShow: false,
+            no: 0,
             offset: 0,
             parPage: 10
         }
+        this.detailModalShow = this.detailModalShow.bind(this);
+        this.detailModalClose = this.detailModalClose.bind(this);
+        this.searchModalShow = this.searchModalShow.bind(this);
+        this.searchModalClose  = this.searchModalClose.bind(this);
         this.doDelete  = this.doDelete.bind(this);
     }
     componentDidMount() {
         // 表示データ取得
         this.getData();
+    }
+
+    // 詳細モーダル表示
+    detailModalShow(e) {
+        this.setState({ 
+            no: e.target.getAttribute('data-no'),
+            detailModalShow: true,
+        })
+
+    }
+
+    // 詳細モーダル非表示
+    detailModalClose() {
+        this.setState({
+            detailModalShow: false,
+         });
+    }
+
+    // 検索モーダル表示
+    searchModalShow(e) {
+        this.setState({ 
+            searchModalShow: true
+        });
+
+    }
+
+    // 検索モーダル非表示
+    searchModalClose() {
+        this.setState({
+            searchModalShow: false
+         });
     }
 
     // ページネーション
@@ -90,10 +128,16 @@ class RestaurantInterestedList extends Component{
     createButton(){
         return (
             <div key="contentButton">
-                <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
-                <Link href="/restaurant_interested_regist">
-                        <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
-                </Link>
+                <Row>
+                    <Col sm={2} xs={6}>
+                        <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
+                    </Col>
+                    <Col sm={2} xs={6}>
+                        <Link href="/restaurant_interested_regist">
+                            <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
+                        </Link>
+                    </Col>
+                </Row>
             </div>
         );
     }
@@ -119,30 +163,32 @@ class RestaurantInterestedList extends Component{
             // 一覧ヘッダー部
             content.push(
                 <Row key={'tableHeader'}>
-                    <Col sm={3} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
-                    <Col sm={2} key='category' className={common.tableHeader}><strong>カテゴリ</strong></Col>
-                    <Col sm={2} key='station' className={common.tableHeader}><strong>最寄り駅</strong></Col>
-                    <Col sm={2} key='price' className={common.tableHeader}><strong>金額</strong></Col>
-                    <Col sm={1} key='score' className={common.tableHeader}><strong>点数</strong></Col>
-                    <Col sm={1} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
-                    <Col sm={1} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
+                    <Col sm={2} xs={4} key='createDate' className={common.tableHeader}><strong>登録日</strong></Col>
+                    <Col sm={3} xs={8} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
+                    <Col sm={1} xs={4} key='price' className={common.tableHeader}><strong>金額</strong></Col>
+                    <Col sm={2} key='category' className={common.tableHeader + ' ' + common.display_none_sm}><strong>カテゴリ</strong></Col>
+                    <Col sm={2} key='station' className={common.tableHeader + ' ' + common.display_none_sm}><strong>最寄り駅</strong></Col>
+                    <Col sm={1} xs={4} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
+                    <Col sm={1} xs={4} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
                 </Row>
             );
             // 一覧ボディ部
             for (let i in list) {
                 content.push(
                     <Row key={'tableBody' + i}>
-                        <Col sm={3} key={'name' + i} className={common.tableBody}>{list[i]['name']}</Col>
-                        <Col sm={2} key={'category' + i} className={common.tableBody}>{list[i]['category']}</Col>
-                        <Col sm={2} key={'station' + i} className={common.tableBody}>{list[i]['station']}駅</Col>
-                        <Col sm={2} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['price']}円</Col>
-                        <Col sm={1} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['score']}点</Col>
-                        <Col sm={1} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
+                        <Col sm={2} xs={4} key={'createDate' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['createDate']}</Col>
+                        <Col sm={3} xs={8} key={'name' + i} className={common.tableBody}>
+                            <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{list[i]['name']}</a>
+                        </Col>
+                        <Col sm={1} xs={4} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['price']}円</Col>
+                        <Col sm={2} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['category']}</Col>
+                        <Col sm={2} key={'station' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['station']}駅</Col>
+                        <Col sm={1} xs={4} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_interested_regist?n=" + list[i]['name']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
-                        <Col sm={1} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
+                        <Col sm={1} xs={4} key={'delete' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Button key={'deleteButton' + i} variant="outline-secondary" onClick={this.doDelete} className={common.buttonSmall} data-no={i} >削除</Button>
                         </Col>
                     </Row>
@@ -159,10 +205,58 @@ class RestaurantInterestedList extends Component{
                         onClick={(e, offset) => this.handleClickPagination(offset)}
                     />
                 </Row>
-            )
+            );
+
+            // 詳細モーダル部
+            content.push(
+                <Modal show={this.state.detailModalShow} onHide={this.detailModalClose} key='detailModal'>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{list[this.state.no]['name']}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row key={'detailModalBody'} className={common.modalBody}>
+                            <Col sm={3} key={'detailModalBodyHeaderCategory'} className={common.tableHeader + ' ' + common.display_none_bg}>カテゴリ</Col>
+                            <Col sm={9} key={'detailModalBodyCategory'} className={common.tableBody + ' ' + common.display_none_bg}>{list[this.state.no]['category']}</Col>
+                            <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
+                            <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{list[this.state.no]['station']}駅</Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="dark" onClick={this.detailModalClose}>
+                            閉じる
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            );
         }
         return (
             <div key="contentTable">
+                {content}
+            </div>
+        )
+    }
+
+    // 検索モーダル作成
+    createSearchModal(){
+        let content = [];
+        content.push(
+            <Modal show={this.state.searchModalShow} onHide={this.searchModalClose} key='searchModal'>
+                <Modal.Header closeButton>
+                    <Modal.Title>検索</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    メンテナンス中。。。
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="dark" onClick={this.searchModalClose}>
+                        閉じる
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+
+        return (
+            <div key="searchModalDiv">
                 {content}
             </div>
         )
@@ -175,6 +269,7 @@ class RestaurantInterestedList extends Component{
         } else {
             content.push(this.createButton());
             content.push(this.createTable());
+            content.push(this.createSearchModal());
         }
         return (
             <div>

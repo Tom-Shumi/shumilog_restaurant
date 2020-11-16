@@ -249,6 +249,10 @@ Form{
 	.display_none_sm {
 		display: none;
 	}
+	.cursor_pointer_sm{
+		cursor: pointer;
+		color: #007bff !important;
+	}
 }
 @media screen and (min-width: 576px){
 	.display_none_bg {

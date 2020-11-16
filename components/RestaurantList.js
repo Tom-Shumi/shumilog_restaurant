@@ -176,7 +176,7 @@ class RestaurantList extends Component{
                 <Row key={'tableHeader'}>
                     <Col sm={2} xs={4} key='visitDate' className={common.tableHeader}><strong>来店日</strong></Col>
                     <Col sm={3} xs={8} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
-                    <Col sm={2} xs={12} key='category' className={common.tableHeader + ' ' + common.display_none_sm}><strong>カテゴリ</strong></Col>
+                    <Col sm={2} key='category' className={common.tableHeader + ' ' + common.display_none_sm}><strong>カテゴリ</strong></Col>
                     <Col sm={2} xs={4} key='price' className={common.tableHeader}><strong>金額</strong></Col>
                     <Col sm={1} xs={2} key='score' className={common.tableHeader}><strong>点数</strong></Col>
                     <Col sm={1} xs={3} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
@@ -191,7 +191,7 @@ class RestaurantList extends Component{
                         <Col sm={3} xs={8} key={'name' + i} className={common.tableBody}>
                             <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{review[i]['name']}</a>
                         </Col>
-                        <Col sm={2} xs={12} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{review[i]['category']}</Col>
+                        <Col sm={2} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{review[i]['category']}</Col>
                         <Col sm={2} xs={4} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
                         <Col sm={1} xs={2} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
                         <Col sm={1} xs={3} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
@@ -242,7 +242,7 @@ class RestaurantList extends Component{
                             <Col sm={9} key={'detailModalBodyReview'} className={common.tableBody}>{review[this.state.no]['review']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderPhoto'} className={common.tableHeader}>画像</Col>
                             <Col sm={9} key={'detailModalBodyPhoto'} className={common.tableBody}>
-                                {review[this.state.no]['photo'] == '' ? '' : <Image src={this.state.photoURL}/>}
+                                {review[this.state.no]['photo'] == '' ? '無し' : <Image src={this.state.photoURL}/>}
                             </Col>
                         </Row>
                     </Modal.Body>

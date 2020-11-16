@@ -23,7 +23,6 @@ class RestaurantInterestedRegist extends Component{
         this.state = {
             categoryList: categoryList,
             name: '',
-            score: 1,
             price: '',
             station: '',
             category: '',
@@ -32,10 +31,8 @@ class RestaurantInterestedRegist extends Component{
 
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeCategory = this.onChangeCategory.bind(this);
-        this.onChangeScore = this.onChangeScore.bind(this);
         this.onChangeStation = this.onChangeStation.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
-        this.createEvaluation = this.createEvaluation.bind(this);
         this.createCategoryList = this.createCategoryList.bind(this);
         this.doRegist = this.doRegist.bind(this);
         this.doClear = this.doClear.bind(this);
@@ -77,7 +74,6 @@ class RestaurantInterestedRegist extends Component{
                 if (data && data.length != 0) {
                     this.setState({
                         name: data[0].name,
-                        score: data[0].score,
                         price: data[0].price,
                         station: data[0].station,
                         category: data[0].category
@@ -95,38 +91,12 @@ class RestaurantInterestedRegist extends Component{
         this.setState({category:e.target.value});
     }
 
-    onChangeScore(e){
-        this.setState({score:e.target.value});
-    }
-
     onChangePrice(e){
         this.setState({price:e.target.value});
     }
     
     onChangeStation(e){
         this.setState({station:e.target.value});
-    }
-
-    //　点数の入力部作成
-    createEvaluation(){
-        let stars = [];
-        for (let i = 5; i >= 1; i--) {
-            let check = false;
-            if (this.state.score == i) {
-                check = true;
-            }
-            stars.push(
-                <input key={"score_radio" + i} type="radio" id={"score" + i} name="score" value={i} checked={check} onChange={this.onChangeScore} />
-            )
-            stars.push(
-                <label key={"score_label" + i} htmlFor={"score" + i} className={common.evaluation_label}><span className={common.text}>{i}</span>★</label>
-            )
-        }
-        return (
-            <div key={"score_div"} className={common.evaluation + ' ' + common.evaluation_active}>
-                {stars}
-            </div>
-        );
     }
 
     //　カテゴリリスト作成
@@ -152,14 +122,15 @@ class RestaurantInterestedRegist extends Component{
     doRegist(e){
         if (confirm("登録します。よろしいですか？")){
             let username = this.props.username;
-
+            let now = new Date();
+            let nowStr = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()
             // 登録用データ作成
             let data = {
                 name: this.state.name,
                 category: this.state.category,
                 price: this.state.price,
                 station: this.state.station,
-                score: this.state.score
+                createDate: nowStr
             }
             let db = firebase.database();
             // 登録の場合
@@ -198,7 +169,6 @@ class RestaurantInterestedRegist extends Component{
         let now = new Date();
         this.setState({
             name: '',
-            score: 1,
             price: '',
             station: '',
             category: ''
@@ -270,13 +240,6 @@ class RestaurantInterestedRegist extends Component{
                                 <Col sm={4}>
                                         <Form.Control type="number" value={this.state.price} onChange={this.onChangePrice} className={common.suffix_text} min="0" />円
                                 </Col>
-                            </Col>
-                            <hr />
-                            <Col sm={4} className={common.form_div}>
-                                <strong>気になる度：</strong>
-                            </Col>
-                            <Col sm={8} className={common.form_div}>
-                                {this.createEvaluation()}
                             </Col>
                             <hr />
                             <Col sm={12} className={common.text_align_center}>
