@@ -165,9 +165,9 @@ class RestaurantInterestedList extends Component{
                 <Row key={'tableHeader'}>
                     <Col sm={2} xs={4} key='createDate' className={common.tableHeader}><strong>登録日</strong></Col>
                     <Col sm={3} xs={8} key='name' className={common.tableHeader}><strong>レストラン名</strong></Col>
-                    <Col sm={1} xs={4} key='price' className={common.tableHeader}><strong>金額</strong></Col>
                     <Col sm={2} key='category' className={common.tableHeader + ' ' + common.display_none_sm}><strong>カテゴリ</strong></Col>
                     <Col sm={2} key='station' className={common.tableHeader + ' ' + common.display_none_sm}><strong>最寄り駅</strong></Col>
+                    <Col sm={1} xs={4} key='review' className={common.tableHeader}><strong>レビュー</strong></Col>
                     <Col sm={1} xs={4} key='edit' className={common.tableHeader}><strong>編集</strong></Col>
                     <Col sm={1} xs={4} key='delete' className={common.tableHeader}><strong>削除</strong></Col>
                 </Row>
@@ -180,9 +180,11 @@ class RestaurantInterestedList extends Component{
                         <Col sm={3} xs={8} key={'name' + i} className={common.tableBody}>
                             <a key={'a_name' + i} onClick={this.detailModalShow} className={common.cursor_pointer} data-no={i}>{list[i]['name']}</a>
                         </Col>
-                        <Col sm={1} xs={4} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{list[i]['price']}円</Col>
                         <Col sm={2} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['category']}</Col>
                         <Col sm={2} key={'station' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['station']}駅</Col>
+                        <Col sm={1} xs={4} key={'review' + i} className={common.tableBody + ' ' + common.text_align_center}>
+                            <Button key={'reviewButton' + i} variant="warning" className={common.buttonSmall}>登録</Button>
+                        </Col>
                         <Col sm={1} xs={4} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_interested_regist?n=" + list[i]['name']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
@@ -219,6 +221,8 @@ class RestaurantInterestedList extends Component{
                             <Col sm={9} key={'detailModalBodyCategory'} className={common.tableBody}>{list[this.state.no]['category']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
                             <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{list[this.state.no]['station']}駅</Col>
+                            <Col sm={3} key={'detailModalBodyHeaderPrice'} className={common.tableHeader}>金額</Col>
+                            <Col sm={9} key={'detailModalBodyPrice'} className={common.tableBody}>{list[this.state.no]['price']}円</Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
