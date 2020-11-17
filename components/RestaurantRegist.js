@@ -391,7 +391,7 @@ class RestaurantRegist extends Component{
                             </Col>
                             <Col sm={8} className={common.form_div}>
                                 <Col sm={4}>
-                                    <Form.Control type="text" size="30" value={this.state.station} onChange={this.onChangeStation} className={common.suffix_text} /> 駅
+                                    <Form.Control type="text" size="30" value={this.state.station} onChange={this.onChangeStation} className={common.suffix_text} />駅
                                 </Col>
                             </Col>
                             <hr />

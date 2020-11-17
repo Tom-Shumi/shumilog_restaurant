@@ -167,11 +167,13 @@ Form{
 .date_text{
 	width: 55%;
 	display: inline;
+	margin: 1% 2% 1% 0%;
 }
 
 .suffix_text{
 	width: 80%;
 	display: inline;
+	margin-right: 2%;
 }
 
 .form_textarea{
@@ -200,8 +202,8 @@ Form{
 .error_msg{
 	color: red;
 	font-weight: bold;
-	font-size: 20px;
-	margin-left: 30px;
+	font-size: 18px;
+	margin-left: 2%;
 }
 
 .tableHeader{

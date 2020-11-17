@@ -215,8 +215,8 @@ class RestaurantInterestedList extends Component{
                     </Modal.Header>
                     <Modal.Body>
                         <Row key={'detailModalBody'} className={common.modalBody}>
-                            <Col sm={3} key={'detailModalBodyHeaderCategory'} className={common.tableHeader + ' ' + common.display_none_bg}>カテゴリ</Col>
-                            <Col sm={9} key={'detailModalBodyCategory'} className={common.tableBody + ' ' + common.display_none_bg}>{list[this.state.no]['category']}</Col>
+                            <Col sm={3} key={'detailModalBodyHeaderCategory'} className={common.tableHeader}>カテゴリ</Col>
+                            <Col sm={9} key={'detailModalBodyCategory'} className={common.tableBody}>{list[this.state.no]['category']}</Col>
                             <Col sm={3} key={'detailModalBodyHeaderStation'} className={common.tableHeader}>最寄り駅</Col>
                             <Col sm={9} key={'detailModalBodyStation'} className={common.tableBody}>{list[this.state.no]['station']}駅</Col>
                         </Row>
