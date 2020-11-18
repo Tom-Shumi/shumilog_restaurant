@@ -123,7 +123,11 @@ class RestaurantInterestedRegist extends Component{
         if (confirm("登録します。よろしいですか？")){
             let username = this.props.username;
             let now = new Date();
-            let nowStr = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()
+            // レビュー登録用データ作成
+            let month = ( '00' + (now.getMonth() + 1) ).slice( -2 );
+            let date = ( '00' + now.getDate() ).slice( -2 );
+            let nowStr = now.getFullYear() + '/' + month + '/' + date
+
             // 登録用データ作成
             let data = {
                 name: this.state.name,
@@ -155,7 +159,6 @@ class RestaurantInterestedRegist extends Component{
                 value: {
                     login: true,
                     username: this.props.username,
-                    data: [],
                     actionURL: '/restaurant_interested_list',
                     message: '登録が完了しました。'
                 }

@@ -87,7 +87,6 @@ class RestaurantList extends Component{
                         value: {
                             login: true,
                             username: username,
-                            data: [],
                             actionURL: '',
                             message: '',
                             photoURL: ''
@@ -121,7 +120,7 @@ class RestaurantList extends Component{
                     review.push(d[i]);
                 }
                 review.sort(function(val1,val2){
-                    return ( val1.visitDate > val2.visitDate ? 1 : -1);
+                    return ( val1.visitDate < val2.visitDate ? 1 : -1);
                 });    
             }
             this.setState({
@@ -314,7 +313,6 @@ class RestaurantList extends Component{
                 value: {
                     login: true,
                     username: this.props.username,
-                    data: [],
                     actionURL: '/restaurant_list',
                     message: '削除が完了しました。'
                 }

@@ -25,7 +25,6 @@ export default fireapp;
 const initial = {
     login: false,
     username: '',
-    data: [],
     actionURL: '',
     message: ''
 }

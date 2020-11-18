@@ -36,7 +36,8 @@ class RestaurantRegist extends Component{
             photo: '',
             stragePhoto: '',
             photoURL: '',
-            updateFlg: 0
+            updateFlg: 0,
+            interestedFlg: 0
         }
 
         this.onChangeName = this.onChangeName.bind(this);
@@ -69,6 +70,17 @@ class RestaurantRegist extends Component{
             // 元データ取得
             this.getTargetData();
             this.setState({updateFlg: 1});
+        }
+        // 気になるレストラン遷移時
+        if (Router.query.n != undefined && Router.query.c != undefined && Router.query.s != undefined) {
+            this.setState(
+                {
+                    interestedFlg: 1,
+                    name: Router.query.n,
+                    category: Router.query.c,
+                    station: Router.query.s
+                }
+            );
         }
     }
 
@@ -186,7 +198,9 @@ class RestaurantRegist extends Component{
             };
     
             // レビュー登録用データ作成
-            let date = this.state.visitYear + '/' + this.state.visitMonth + '/' + this.state.visitDay;
+            let visitMonth = ( '00' + this.state.visitMonth ).slice( -2 );
+            let visitDay = ( '00' + this.state.visitDay ).slice( -2 );
+            let date = this.state.visitYear + '/' + visitMonth + '/' + visitDay;
             let data = {
                 name: this.state.name,
                 category: this.state.category,
@@ -216,13 +230,25 @@ class RestaurantRegist extends Component{
                 });
             }
 
+            // 気になるレストランからの登録の場合
+            if (this.state.interestedFlg == 1) {
+                let db_del = firebase.database();
+                db_del.ref('Interested/' + username).orderByChild('name').equalTo(this.state.name).on('value', (snapshot)=>{
+                    let target = snapshot.val() || null;
+                    if (target) {
+                        let key = Object.keys(target)[0];
+                        let del = db_del.ref('Interested/' + username + '/' + key);
+                        del.remove();
+                    }
+                });
+            }
+
             // 共通メッセージ画面遷移
             this.props.dispatch({
                 type: 'UPDATE_INFO',
                 value: {
                     login: true,
                     username: this.props.username,
-                    data: [],
                     actionURL: '/restaurant_list',
                     message: '登録が完了しました。'
                 }

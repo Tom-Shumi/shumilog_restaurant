@@ -85,7 +85,7 @@ class RestaurantInterestedList extends Component{
                     list.push(d[i]);
                 }
                 list.sort(function(val1,val2){
-                    return ( val1.score > val2.score ? 1 : -1);
+                    return ( val1.score < val2.score ? 1 : -1);
                 });    
             }
             this.setState({
@@ -115,7 +115,6 @@ class RestaurantInterestedList extends Component{
                 value: {
                     login: true,
                     username: this.props.username,
-                    data: [],
                     actionURL: '/restaurant_interested_list',
                     message: '削除が完了しました。'
                 }
@@ -183,7 +182,9 @@ class RestaurantInterestedList extends Component{
                         <Col sm={2} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['category']}</Col>
                         <Col sm={2} key={'station' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['station']}駅</Col>
                         <Col sm={1} xs={4} key={'review' + i} className={common.tableBody + ' ' + common.text_align_center}>
-                            <Button key={'reviewButton' + i} variant="warning" className={common.buttonSmall}>登録</Button>
+                            <Link href={"/restaurant_regist?n=" + list[i]['name'] + "&c=" + list[i]['category'] + "&s=" + list[i]['station']}>
+                                <Button key={'reviewButton' + i} variant="warning" className={common.buttonSmall}>登録</Button>
+                            </Link>
                         </Col>
                         <Col sm={1} xs={4} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
                             <Link href={"/restaurant_interested_regist?n=" + list[i]['name']}>
