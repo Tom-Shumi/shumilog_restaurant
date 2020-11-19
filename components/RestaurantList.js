@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import {Button, Row, Col, Modal, Image} from 'react-bootstrap';
+import {Button, Row, Col, Modal, Form, Image} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 import Router from 'next/router';
@@ -269,7 +269,52 @@ class RestaurantList extends Component{
                     <Modal.Title>検索</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    メンテナンス中。。。
+                    <Form>
+                        <Row>
+                            <Col xs={5} className={common.form_div}>
+                                <strong>来店日</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text} placeholder="YYYY/MM/DD" />
+                            </Col>
+                            <hr />
+                            <Col xs={5} className={common.form_div}>
+                                <strong>レストラン名</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text} />
+                            </Col>
+                            <hr />
+                            <Col xs={5} className={common.form_div}>
+                                <strong>金額</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="number" className={common.date_text} />円
+                            </Col>
+                            <hr />
+                            <Col xs={5} className={common.form_div}>
+                                <strong>点数</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="number" className={common.date_text} />点
+                            </Col>
+                            <hr />
+                            <Col xs={5} className={common.form_div}>
+                                <strong>カテゴリ</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text} />
+                            </Col>
+                            <hr />
+                            <Col xs={5} className={common.form_div}>
+                                <strong>最寄り駅</strong>
+                            </Col>
+                            <Col xs={7} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text} />
+                            </Col>
+                            <hr />
+                        </Row>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="dark" onClick={this.searchModalClose}>
