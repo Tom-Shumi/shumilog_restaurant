@@ -182,7 +182,7 @@ class RestaurantInterestedList extends Component{
                         <Col sm={2} key={'category' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['category']}</Col>
                         <Col sm={2} key={'station' + i} className={common.tableBody + ' ' + common.display_none_sm}>{list[i]['station']}駅</Col>
                         <Col sm={1} xs={4} key={'review' + i} className={common.tableBody + ' ' + common.text_align_center}>
-                            <Link href={"/restaurant_regist?n=" + list[i]['name'] + "&c=" + list[i]['category'] + "&s=" + list[i]['station']}>
+                            <Link href={"/restaurant_regist?t=2&n=" + list[i]['name'] + "&c=" + list[i]['category'] + "&s=" + list[i]['station']}>
                                 <Button key={'reviewButton' + i} variant="warning" className={common.buttonSmall}>登録</Button>
                             </Link>
                         </Col>

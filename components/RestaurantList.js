@@ -138,7 +138,7 @@ class RestaurantList extends Component{
                         <Button key="search" variant="outline-danger" onClick={this.searchModalShow} className={common.buttonMiddle}>検索</Button>
                     </Col>
                     <Col sm={2} xs={6}>
-                        <Link href="/restaurant_regist">
+                        <Link href="/restaurant_regist?t=1">
                             <Button key="regist" variant="danger" className={common.buttonMiddle}>登録</Button>
                         </Link>
                     </Col>
@@ -194,7 +194,7 @@ class RestaurantList extends Component{
                         <Col sm={2} xs={4} key={'price' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['price']}円</Col>
                         <Col sm={1} xs={2} key={'score' + i} className={common.tableBody + ' ' + common.text_align_right}>{review[i]['score']}点</Col>
                         <Col sm={1} xs={3} key={'edit' + i} className={common.tableBody + ' ' + common.text_align_center}>
-                            <Link href={"/restaurant_regist?n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
+                            <Link href={"/restaurant_regist?t=1&n=" + review[i]['name'] + "&d=" + review[i]['visitDate']}>
                                 <Button key={'editButton' + i} variant="danger" className={common.buttonSmall}>編集</Button>
                             </Link>
                         </Col>
