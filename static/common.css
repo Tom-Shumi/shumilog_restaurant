@@ -247,6 +247,15 @@ Form{
 	margin-right: 1%;
 }
 
+.modal_text{
+	width: 85% !important;
+}
+
+.modal_label{
+	font-size: 15px;
+}
+
+
 @media screen and (max-width: 576px){
 	.display_none_sm {
 		display: none;

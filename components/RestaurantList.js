@@ -271,54 +271,57 @@ class RestaurantList extends Component{
                 <Modal.Body>
                     <Form>
                         <Row>
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>来店日</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="text" className={common.date_text} placeholder="YYYY/MM/DD" />
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} placeholder="YYYY/MM/DD" maxLength='10' />
                             </Col>
                             <hr />
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>レストラン名</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="text" className={common.date_text} />
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} />
                             </Col>
                             <hr />
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>金額</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="number" className={common.date_text} />円
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="number" className={common.date_text + ' ' + common.modal_text} min="0" />円
                             </Col>
                             <hr />
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>点数</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="number" className={common.date_text} />点
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="number" className={common.date_text + ' ' + common.modal_text} min="1" max="5" />点
                             </Col>
                             <hr />
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>カテゴリ</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="text" className={common.date_text} />
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} />
                             </Col>
                             <hr />
-                            <Col xs={5} className={common.form_div}>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
                                 <strong>最寄り駅</strong>
                             </Col>
-                            <Col xs={7} className={common.form_div}>
-                                <Form.Control type="text" className={common.date_text} />
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} />駅
                             </Col>
                             <hr />
                         </Row>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="outline-danger" onClick={this.searchModalClose}>
+                        検索
+                    </Button>
                     <Button variant="dark" onClick={this.searchModalClose}>
-                        閉じる
+                        戻る
                     </Button>
                 </Modal.Footer>
             </Modal>

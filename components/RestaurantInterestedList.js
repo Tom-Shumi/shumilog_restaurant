@@ -228,7 +228,7 @@ class RestaurantInterestedList extends Component{
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="dark" onClick={this.detailModalClose}>
-                            閉じる
+                            戻る
                         </Button>
                     </Modal.Footer>
                 </Modal>
