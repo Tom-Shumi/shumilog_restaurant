@@ -167,7 +167,7 @@ Form{
 .date_text{
 	width: 55%;
 	display: inline;
-	margin: 1% 2% 1% 0%;
+	margin: 1% 2% 1% 1%;
 }
 
 .suffix_text{
@@ -251,10 +251,17 @@ Form{
 	width: 85% !important;
 }
 
+.modal_date{
+	width: 130px !important;
+}
+
+.modal_number{
+	width: 85px !important
+}
+
 .modal_label{
 	font-size: 15px;
 }
-
 
 @media screen and (max-width: 576px){
 	.display_none_sm {
