@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import {Button, Row, Col, Modal, Image} from 'react-bootstrap';
+import {Button, Row, Col, Modal, Form} from 'react-bootstrap';
 import common from "../static/common.css";
 import Link from 'next/link';
 import Router from 'next/router';
@@ -10,20 +10,49 @@ import Pagination from "material-ui-flat-pagination";
 class RestaurantInterestedList extends Component{
     constructor(props){
         super(props);
+        let db = firebase.database();
+        let ref_CategoryList = db.ref('CategoryMst/');
+        let categoryList = [];
+        // カテゴリマスタ取得
+        ref_CategoryList.orderByKey().on('value', (snapshot)=>{
+            for(let i in snapshot.val()){
+                let categoryMst = snapshot.val()[i];
+                categoryList.push(categoryMst);
+            }
+        })
         this.state = {
             list: [],
             loading: true,
             detailModalShow: false,
             searchModalShow: false,
+            searchCreateDateFrom: '',
+            searchCreateDateTo: '',
+            searchName: '',
+            searchPriceFrom: '',
+            searchPriceTo: '',
+            searchCategory: '',
+            searchStation: '',
             no: 0,
             offset: 0,
-            parPage: 10
+            parPage: 10,
+            categoryList: categoryList
         }
         this.detailModalShow = this.detailModalShow.bind(this);
         this.detailModalClose = this.detailModalClose.bind(this);
         this.searchModalShow = this.searchModalShow.bind(this);
         this.searchModalClose  = this.searchModalClose.bind(this);
+        this.onChangeSearchCreateDateFrom  = this.onChangeSearchCreateDateFrom.bind(this);
+        this.onChangeSearchCreateDateTo  = this.onChangeSearchCreateDateTo.bind(this);
+        this.onChangeSearchName  = this.onChangeSearchName.bind(this);
+        this.onChangeSearchPriceFrom  = this.onChangeSearchPriceFrom.bind(this);
+        this.onChangeSearchPriceTo  = this.onChangeSearchPriceTo.bind(this);
+        this.onChangeSearchCategory  = this.onChangeSearchCategory.bind(this);
+        this.onChangeSearchStation  = this.onChangeSearchStation.bind(this);
+        this.doSearch  = this.doSearch.bind(this);
+        this.doFilter  = this.doFilter.bind(this);
+        this.doClear  = this.doClear.bind(this);
         this.doDelete  = this.doDelete.bind(this);
+        this.createCategoryList = this.createCategoryList.bind(this);
     }
     componentDidMount() {
         // 表示データ取得
@@ -36,7 +65,6 @@ class RestaurantInterestedList extends Component{
             no: e.target.getAttribute('data-no'),
             detailModalShow: true,
         })
-
     }
 
     // 詳細モーダル非表示
@@ -59,6 +87,34 @@ class RestaurantInterestedList extends Component{
         this.setState({
             searchModalShow: false
          });
+    }
+
+    onChangeSearchCreateDateFrom(e){
+        this.setState({searchCreateDateFrom: e.target.value});
+    }
+
+    onChangeSearchCreateDateTo(e){
+        this.setState({searchCreateDateTo: e.target.value});
+    }
+
+    onChangeSearchName(e){
+        this.setState({searchName: e.target.value});
+    }
+
+    onChangeSearchPriceFrom(e){
+        this.setState({searchPriceFrom: e.target.value});
+    }
+
+    onChangeSearchPriceTo(e){
+        this.setState({searchPriceTo: e.target.value});
+    }
+
+    onChangeSearchCategory(e){
+        this.setState({searchCategory: e.target.value});
+    }
+
+    onChangeSearchStation(e){
+        this.setState({searchStation: e.target.value});
     }
 
     // ページネーション
@@ -94,6 +150,96 @@ class RestaurantInterestedList extends Component{
         });
     }
 
+    // 表示データ取得
+    doSearch(){
+        let name = this.props.username;
+        if (name == ''){
+            return;
+        } else {
+            this.setState({loading:false});
+        }
+        let db = firebase.database();
+        let ref = db.ref('Interested/');    
+        // キーを元にレビューを取得
+        ref.orderByKey().equalTo(name).on('value', (snapshot)=>{
+            let list = [];
+            if (snapshot.val() != null) {
+                let d = snapshot.val()[name];
+                for(let i in d){
+                    list.push(d[i]);
+                }
+                list.sort(function(val1,val2){
+                    return ( val1.score < val2.score ? 1 : -1);
+                });
+            }
+            list = this.doFilter(list);
+            this.setState({
+                list: list,
+                searchModalShow: false
+            });
+        });
+    }
+
+    // 検索_絞り込み
+    doFilter(list){
+        if (this.state.searchCreateDateFrom != '') {
+            let searchCreateDateFrom = this.state.searchCreateDateFrom;
+            list = list.filter(function(item, index){
+                if (item.createDate >= searchCreateDateFrom) return true;
+            });
+        }
+        if (this.state.searchCreateDateTo != '') {
+            let searchCreateDateTo = this.state.searchCreateDateTo;
+            list = list.filter(function(item, index){
+                if (item.createDate <= searchCreateDateTo) return true;
+            });
+        }
+        if (this.state.searchName != '') {
+            let searchName = this.state.searchName;
+            list = list.filter(function(item, index){
+                if (item.name.includes(searchName)) return true;
+            });
+        }
+        if (this.state.searchPriceFrom != '') {
+            let searchPriceFrom = this.state.searchPriceFrom;
+            list = list.filter(function(item, index){
+                if (item.price >= searchPriceFrom) return true;
+            });
+        }
+        if (this.state.searchPriceTo != '') {
+            let searchPriceTo = this.state.searchPriceTo;
+            list = list.filter(function(item, index){
+                if (item.price <= searchPriceTo) return true;
+            });
+        }
+        if (this.state.searchCategory != '') {
+            let searchCategory = this.state.searchCategory;
+            list = list.filter(function(item, index){
+                if (item.category == searchCategory) return true;
+            });
+        }
+        if (this.state.searchStation != '') {
+            let searchStation = this.state.searchStation;
+            list = list.filter(function(item, index){
+                if (item.station.includes(searchStation)) return true;
+            });
+        }
+        return list;
+    }
+
+    // 検索情報クリア
+    doClear(){
+        this.setState({
+            searchCreateDateFrom: '',
+            searchCreateDateTo: '',
+            searchName: '',
+            searchPriceFrom: '',
+            searchPriceTo: '',
+            searchCategory: '',
+            searchStation: ''
+        });
+    }
+
     // 削除
     doDelete(e){
         if (confirm("削除します。よろしいですか？")){
@@ -121,6 +267,25 @@ class RestaurantInterestedList extends Component{
             });
             Router.push('/restaurant_info');
         }
+    }
+
+    //　カテゴリリスト作成
+    createCategoryList(){
+        let contentCategoryList = [];
+        contentCategoryList.push(
+            // 初期表示用のダミー
+            <option key={"category"} value=''></option>
+        )
+        for (let i in this.state.categoryList){
+            contentCategoryList.push(
+                <option key={"category" + i} value={this.state.categoryList[i]['name']}>{this.state.categoryList[i]['name']}</option>
+            )
+        }
+        return (
+            <Form.Control as="select" onChange={this.onChangeSearchCategory} value={this.state.searchCategory} >
+                {contentCategoryList}
+            </Form.Control>
+        );
     }
 
      // ヘッダーボタン作成
@@ -250,11 +415,57 @@ class RestaurantInterestedList extends Component{
                     <Modal.Title>検索</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    メンテナンス中。。。
+                    <Form>
+                        <Row>
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
+                                <strong>登録日</strong>
+                            </Col>
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_date} placeholder="YYYY/MM/DD" maxLength='10' value={this.state.searchCreateDateFrom} onChange={this.onChangeSearchCreateDateFrom} />
+                                ～<Form.Control type="text" className={common.date_text + ' ' + common.modal_date} placeholder="YYYY/MM/DD" maxLength='10' value={this.state.searchCreateDateTo} onChange={this.onChangeSearchCreateDateTo} />
+                            </Col>
+                            <hr />
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
+                                <strong>レストラン名</strong>
+                            </Col>
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} value={this.state.searchName} onChange={this.onChangeSearchName} />
+                            </Col>
+                            <hr />
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
+                                <strong>カテゴリ</strong>
+                            </Col>
+                            <Col xs={8} className={common.form_div}>
+                                {this.createCategoryList()}
+                            </Col>
+                            <hr />
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
+                                <strong>最寄り駅</strong>
+                            </Col>
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="text" className={common.date_text + ' ' + common.modal_text} value={this.state.searchStation} onChange={this.onChangeSearchStation} />駅
+                            </Col>
+                            <hr />
+                            <Col xs={4} className={common.form_div + ' ' + common.modal_label}>
+                                <strong>金額</strong>
+                            </Col>
+                            <Col xs={8} className={common.form_div}>
+                                <Form.Control type="number" className={common.date_text + ' ' + common.modal_number} min="0" value={this.state.searchPriceFrom} onChange={this.onChangeSearchPriceFrom} />～
+                                <Form.Control type="number" className={common.date_text + ' ' + common.modal_number} min="0" value={this.state.searchPriceTo} onChange={this.onChangeSearchPriceTo} />円
+                            </Col>
+                            <hr />
+                        </Row>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="outline-danger" onClick={this.doSearch}>
+                        検索
+                    </Button>
+                    <Button variant="outline-secondary" onClick={this.doClear}>
+                        クリア
+                    </Button>
                     <Button variant="dark" onClick={this.searchModalClose}>
-                        閉じる
+                        戻る
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -459,8 +459,6 @@ class RestaurantList extends Component{
     }
     // 検索_絞り込み
     doFilter(review){
-        console.log('doFilter');
-
         if (this.state.searchVisitDateFrom != '') {
             let searchVisitDateFrom = this.state.searchVisitDateFrom;
             review = review.filter(function(item, index){
