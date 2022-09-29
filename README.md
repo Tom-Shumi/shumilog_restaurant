@@ -2,6 +2,6 @@
 shumilog（映画とレストランの記録サイト）のレストラン側のフロントエンド
 
 # Environment
-- Typescript
+- Javascript
 - React.js
 - Next.js
